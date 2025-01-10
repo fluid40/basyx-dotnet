@@ -110,7 +110,7 @@ namespace BaSyx.Components.Common
                 Configure(app);
             });
 
-            ConfigureLogging(LogLevel.Trace);
+            ConfigureLogging(LogLevel.Information);
 
             if (string.IsNullOrEmpty(Settings.ServerConfig.Hosting.ContentPath))
                 ContentRoot = Path.Join(ExecutionPath, DEFAULT_CONTENT_ROOT);
