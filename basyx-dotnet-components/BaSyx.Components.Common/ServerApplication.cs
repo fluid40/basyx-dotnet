@@ -339,8 +339,6 @@ namespace BaSyx.Components.Common
                 logger.LogInformation("Pages-RootDirectory: " + opts.RootDirectory);
             });
 
-            services.AddDirectoryBrowser();
-
             services.PostConfigure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = actionContext =>
@@ -448,12 +446,6 @@ namespace BaSyx.Components.Common
                     FileProvider = new PhysicalFileProvider(@path),
                     RequestPath = new PathString(FILES_PATH),
                     ServeUnknownFileTypes = true
-                });
-
-                app.UseDirectoryBrowser(new DirectoryBrowserOptions
-                {
-                    FileProvider = new PhysicalFileProvider(@path),
-                    RequestPath = new PathString(FILES_PATH)
                 });
             }
 
