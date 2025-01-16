@@ -13,21 +13,31 @@ using System.Xml.Serialization;
 
 namespace BaSyx.Utils.Settings
 {
-    public class ClientConfiguration
+    public class AuthenticationConfiguration
     {
         [XmlElement]
-        public string ClientId { get; set; }
-        [XmlElement]
-        public string Endpoint { get; set; }
-        [XmlElement]
-        public RequestConfiguration RequestConfig { get; set; }
-        [XmlElement]
-        public AuthenticationConfiguration AuthenticationConfig { get; set; }
+        public bool Activated { get; set; }
 
-        public ClientConfiguration()
+        [XmlElement]
+        public string Username { get; set; }
+
+        [XmlElement]
+        public string Password { get; set; }
+
+        [XmlElement]
+        public string BaseAddress { get; set; }
+
+        [XmlElement]
+        public string GetTokenRelativeUrl { get; set; }
+
+        [XmlElement]
+        public string ValidateTokenRelativeUrl { get; set; }
+
+        [XmlElement]
+        public string TokenType { get; set; }
+
+        public AuthenticationConfiguration()
         {
-            RequestConfig = new RequestConfiguration();
-            AuthenticationConfig = new AuthenticationConfiguration();
         }
     }
 }
