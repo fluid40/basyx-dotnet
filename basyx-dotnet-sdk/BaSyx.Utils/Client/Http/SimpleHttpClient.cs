@@ -150,33 +150,34 @@ namespace BaSyx.Utils.Client.Http
                 HttpClient.Timeout = timeout;
         }
 
-        public virtual HttpRequestMessage CreateRequest(Uri uri, HttpMethod method)
+        public virtual Task<HttpRequestMessage> CreateRequest(Uri uri, HttpMethod method)
         {
-            return new HttpRequestMessage(method, uri);
+            return Task.FromResult(new HttpRequestMessage(method, uri));
         }
 
-        public virtual HttpRequestMessage CreateRequest(Uri uri, HttpMethod method, HttpContent content)
+        public virtual async Task<HttpRequestMessage> CreateRequest(Uri uri, HttpMethod method, HttpContent content)
         {
-            var message = CreateRequest(uri, method);
+            var message = await CreateRequest(uri, method).ConfigureAwait(false);
             if (content != null)
                 message.Content = content;
 
             return message;
         }
 
-        public virtual HttpRequestMessage CreateJsonContentRequest(Uri uri, HttpMethod method, object content)
+        public virtual async Task<HttpRequestMessage> CreateJsonContentRequest(Uri uri, HttpMethod method, object content)
         {
-            var message = CreateRequest(uri, method, () =>
+            var message = await CreateRequest(uri, method, () =>
             {
                 var serialized = JsonSerializer.Serialize(content, JsonSerializerOptions);
                 return new StringContent(serialized, Encoding.UTF8, "application/json");
-            });
+            }).ConfigureAwait(false);
+
             return message;
         }
 
-        public virtual HttpRequestMessage CreateRequest(Uri uri, HttpMethod method, Func<HttpContent> content)
+        public virtual async Task<HttpRequestMessage> CreateRequest(Uri uri, HttpMethod method, Func<HttpContent> content)
         {
-            var message = CreateRequest(uri, method);
+            var message = await CreateRequest(uri, method).ConfigureAwait(false);
             if (content != null)
                 message.Content = content.Invoke();
 
