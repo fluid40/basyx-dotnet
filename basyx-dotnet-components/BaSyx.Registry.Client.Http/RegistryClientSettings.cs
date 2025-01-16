@@ -24,7 +24,5 @@ namespace BaSyx.Registry.Client.Http
     {
         [XmlElement]
         public string RegistryUrl { get; set; }
-        [XmlElement]
-        public string RegisterAtAAS { get; set; }
     }
 }
