@@ -125,9 +125,9 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<ISubmodel>> CreateSubmodelAsync(ISubmodel submodel)
         {
             Uri uri = GetPath(SubmodelRepositoryRoutes.SUBMODELS);
-            var request = base.CreateJsonContentRequest(uri, HttpMethod.Post, submodel);
-            var response = await base.SendRequestAsync(request, CancellationToken.None);
-            var result = await base.EvaluateResponseAsync<ISubmodel>(response, response.Entity);
+            var request = await base.CreateJsonContentRequest(uri, HttpMethod.Post, submodel).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync<ISubmodel>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
             return result;
         }
@@ -135,9 +135,9 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<ISubmodel>> RetrieveSubmodelAsync(Identifier id)
         {
             Uri uri = GetPath(SubmodelRepositoryRoutes.SUBMODEL_BYID, id);
-            var request = base.CreateRequest(uri, HttpMethod.Get);
-            var response = await base.SendRequestAsync(request, CancellationToken.None);
-            var result = await base.EvaluateResponseAsync<ISubmodel>(response, response.Entity);
+            var request = await base.CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync<ISubmodel>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
             return result;
         }
@@ -154,9 +154,9 @@ namespace BaSyx.Clients.AdminShell.Http
             var uriBuilder = new UriBuilder(uri) { Query = query.ToString() };
             uri = uriBuilder.Uri;
 
-            var request = base.CreateRequest(uri, HttpMethod.Get);
-            var response = await base.SendRequestAsync(request, CancellationToken.None);
-            var result = await base.EvaluateResponseAsync<PagedResult<IElementContainer<ISubmodel>>>(response, response.Entity);
+            var request = await base.CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync<PagedResult<IElementContainer<ISubmodel>>>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
             return result;
         }
@@ -164,9 +164,9 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelAsync(Identifier id, ISubmodel submodel)
         {
             Uri uri = GetPath(SubmodelRepositoryRoutes.SUBMODEL_BYID, id);
-            var request = base.CreateJsonContentRequest(uri, HttpMethod.Put, submodel);
-            var response = await base.SendRequestAsync(request, CancellationToken.None);
-            var result = await base.EvaluateResponseAsync(response, response.Entity);
+            var request = await base.CreateJsonContentRequest(uri, HttpMethod.Put, submodel).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
             return result;
         }
@@ -174,9 +174,9 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> DeleteSubmodelAsync(Identifier id)
         {
             Uri uri = GetPath(SubmodelRepositoryRoutes.SUBMODEL_BYID, id);
-            var request = base.CreateRequest(uri, HttpMethod.Delete);
-            var response = await base.SendRequestAsync(request, CancellationToken.None);
-            var result = await base.EvaluateResponseAsync(response, response.Entity);
+            var request = await base.CreateRequest(uri, HttpMethod.Delete).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
             return result;
         }

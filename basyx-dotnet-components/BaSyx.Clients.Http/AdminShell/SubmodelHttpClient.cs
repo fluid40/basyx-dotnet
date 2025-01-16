@@ -198,7 +198,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<ISubmodel>> RetrieveSubmodelAsync(RequestLevel level = RequestLevel.Deep, RequestExtent extent = RequestExtent.WithoutBlobValue)
         {
             Uri uri = GetPath();
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<ISubmodel>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -208,7 +208,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelAsync(ISubmodel submodel)
         {
             Uri uri = GetPath();
-            var request = CreateJsonContentRequest(uri, HttpMethod.Patch, submodel);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Patch, submodel).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -218,7 +218,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> ReplaceSubmodelAsync(ISubmodel submodel)
         {
             Uri uri = GetPath();
-            var request = CreateJsonContentRequest(uri, HttpMethod.Put, submodel);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Put, submodel).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -228,7 +228,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelMetadataAsync(ISubmodel submodel)
         {
             Uri uri = GetPath(SubmodelRoutes.METADATA);
-            var request = CreateJsonContentRequest(uri, HttpMethod.Patch, submodel);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Patch, submodel).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -246,7 +246,7 @@ namespace BaSyx.Clients.AdminShell.Http
             else
                 uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH, rootIdShortPath);
 
-            var request = CreateJsonContentRequest(uri, HttpMethod.Post, submodelElement);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Post, submodelElement).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<ISubmodelElement>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -256,7 +256,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelElementAsync(string rootIdShortPath, ISubmodelElement submodelElement)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH, rootIdShortPath);
-            var request = CreateJsonContentRequest(uri, HttpMethod.Put, submodelElement);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Put, submodelElement).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -266,7 +266,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelElementByPathAsync(string rootIdShortPath, ISubmodelElement submodelElement)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH, rootIdShortPath);
-            var request = CreateJsonContentRequest(uri, HttpMethod.Patch, submodelElement);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Patch, submodelElement).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -276,7 +276,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelElementMetadataAsync(string rootIdShortPath, ISubmodelElement submodelElement)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH + OutputModifier.METADATA, rootIdShortPath);
-            var request = CreateJsonContentRequest(uri, HttpMethod.Patch, submodelElement);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Patch, submodelElement).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -295,7 +295,7 @@ namespace BaSyx.Clients.AdminShell.Http
             var uriBuilder = new UriBuilder(uri) { Query = query.ToString() };
             uri = uriBuilder.Uri;
 
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<PagedResult<IElementContainer<ISubmodelElement>>>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -312,7 +312,7 @@ namespace BaSyx.Clients.AdminShell.Http
             var uriBuilder = new UriBuilder(uri) { Query = query.ToString() };
             uri = uriBuilder.Uri;
 
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<List<string>>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -322,7 +322,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<ISubmodelElement>> RetrieveSubmodelElementAsync(string idShortPath)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH, idShortPath);
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<ISubmodelElement>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -332,7 +332,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<ValueScope>> RetrieveSubmodelElementValueAsync(string idShortPath)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH + OutputModifier.VALUE, idShortPath);
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<ValueScope>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();  
@@ -342,7 +342,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult<IReference>> RetrieveSubmodelElementReferenceAsync(string idShortPath)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH + OutputModifier.REFERENCE, idShortPath);
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<IReference>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -358,7 +358,7 @@ namespace BaSyx.Clients.AdminShell.Http
             var uriBuilder = new UriBuilder(uri) { Query = query.ToString() };
             uri = uriBuilder.Uri;
 
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<PagedResult<IReference>>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -373,7 +373,7 @@ namespace BaSyx.Clients.AdminShell.Http
             var uriBuilder = new UriBuilder(uri) { Query = query.ToString() };
             uri = uriBuilder.Uri;
 
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<List<string>>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -383,7 +383,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> UpdateSubmodelElementValueAsync(string idShortPath, ValueScope value)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH + OutputModifier.VALUE, idShortPath);
-            var request = CreateJsonContentRequest(uri, new HttpMethod("PATCH"), value);
+            var request = await CreateJsonContentRequest(uri, new HttpMethod("PATCH"), value);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -393,7 +393,7 @@ namespace BaSyx.Clients.AdminShell.Http
         public async Task<IResult> DeleteSubmodelElementAsync(string idShortPath)
         {
             Uri uri = GetPath(SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH, idShortPath);
-            var request = CreateRequest(uri, HttpMethod.Delete);
+            var request = await CreateRequest(uri, HttpMethod.Delete).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
@@ -407,7 +407,7 @@ namespace BaSyx.Clients.AdminShell.Http
                 path = SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH_INVOKE_ASYNC;
 
             Uri uri = GetPath(path, idShortPath);
-            var request = CreateJsonContentRequest(uri, HttpMethod.Post, invocationRequest);
+            var request = await CreateJsonContentRequest(uri, HttpMethod.Post, invocationRequest).ConfigureAwait(false);
 
             TimeSpan timeout = request.GetTimeout() ?? GetDefaultTimeout();
             if (invocationRequest.Timeout.HasValue && invocationRequest.Timeout.Value > timeout.TotalMilliseconds)
@@ -423,7 +423,7 @@ namespace BaSyx.Clients.AdminShell.Http
         {
             string path = SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH_OPERATION_RESULTS.Replace("{handleId}", requestId);
             Uri uri = GetPath(path, idShortPath);
-            var request = CreateRequest(uri, HttpMethod.Get);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
             var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
             var result = await EvaluateResponseAsync<InvocationResponse>(response, response.Entity).ConfigureAwait(false);
             response?.Entity?.Dispose();
