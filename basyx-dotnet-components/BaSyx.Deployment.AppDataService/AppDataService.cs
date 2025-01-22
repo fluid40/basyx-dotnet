@@ -288,7 +288,7 @@ namespace BaSyx.Deployment.AppDataService
             logger.LogInformation($"File {settingsFileName} loaded successfully");
         }        
 
-        public void AddFile(string fileName, string storageLocation = null)
+        public string AddFile(string fileName, string storageLocation = null)
         {
             if (string.IsNullOrEmpty(storageLocation))
                 storageLocation = BaseStorageLocation;
@@ -297,6 +297,7 @@ namespace BaSyx.Deployment.AppDataService
             if(!AppDataContext.Files.ContainsKey(fileName))
                 AppDataContext.Files.Add(fileName, filePathToReadFrom);
             logger.LogInformation($"File {filePathToReadFrom} loaded successfully");
+            return filePathToReadFrom;
         }
 
         private static string GetOrCreateTargetFilePath(string fileName, string baseStorageLocation)
