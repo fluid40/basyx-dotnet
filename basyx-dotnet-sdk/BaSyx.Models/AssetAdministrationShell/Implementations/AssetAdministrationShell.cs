@@ -32,7 +32,8 @@ namespace BaSyx.Models.AdminShell
             get 
             {
                 _submodelRefs = new List<IReference<ISubmodel>>();
-                foreach (var submodel in Submodels)
+                var safeSubmodels = Submodels.ToList();
+                foreach (var submodel in safeSubmodels)
                 {
                     var reference = submodel.CreateReference();
                     _submodelRefs.Add(reference);

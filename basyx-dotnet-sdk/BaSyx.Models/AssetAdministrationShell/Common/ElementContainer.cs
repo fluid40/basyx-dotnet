@@ -225,7 +225,8 @@ namespace BaSyx.Models.AdminShell
                 return false;
             else
             {
-                var child = _children.FirstOrDefault(c => c.IdShort == idShort);
+                var safeChildren = _children.ToList();
+                var child = safeChildren.FirstOrDefault(c => c.IdShort == idShort);
                 if (child == null)
                     return false;
                 else
