@@ -60,7 +60,8 @@ namespace BaSyx.API.Http.Controllers.PackageService
         /// Stores the AASX package at the server
         /// </summary>
         /// <returns>Package Description</returns>
-        /// <response code="200"></response>     
+        /// <response code="200"></response>
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("packages", Name = "PostAASXPackage")]
         [ProducesResponseType(201, Type = typeof(PackageDescription))]
         [DisableRequestSizeLimit]
