@@ -9,22 +9,19 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 
-using System;
 using BaSyx.API.ServiceProvider;
 using BaSyx.Models.AdminShell;
 using BaSyx.Models.Connectivity;
 using BaSyx.Models.Extensions;
-using BaSyx.Models.Extensions.JsonConverters;
 using BaSyx.Utils.DependencyInjection;
 using BaSyx.Utils.ResultHandling;
 using BaSyx.Utils.ResultHandling.ResultTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace BaSyx.API.Http.Controllers
@@ -374,7 +371,10 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_GetSubmodel(string aasIdentifier, string submodelIdentifier, [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
         {
-            throw new NotImplementedException();
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult result, out IAssetAdministrationShellServiceProvider provider))
+                return result;
+
+            return GetSubmodelById(submodelIdentifier, level, extent);
         }
 
         /// <summary>
@@ -393,6 +393,16 @@ namespace BaSyx.API.Http.Controllers
         public IActionResult ShellRepo_PutSubmodel(string aasIdentifier, string submodelIdentifier, [FromBody] ISubmodel submodel)
         {
             throw new NotImplementedException();
+
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult result, out IAssetAdministrationShellServiceProvider provider))
+                return result;
+
+            var retrivedResult = aasServiceProvider.RetrieveAssetAdministrationShell(aasIdentifier);
+            var aas = retrivedResult.Entity as AssetAdministrationShell;
+
+            // aas.SubmodelReferences
+
+            return PutSubmodelById(submodelIdentifier, submodel);
         }
 
         /// <summary>
