@@ -2202,6 +2202,13 @@
             <response code="200">Operation result object</response>
             <inheritdoc cref="M:BaSyx.API.Http.Controllers.SubmodelController.GetOperationAsyncResultValueOnly(System.String,System.String)"/>
         </member>
+        <member name="M:BaSyx.API.Http.Controllers.RepositoryController.GetRoot(System.String,System.String,System.String)">
+            <summary>
+            Returns root Messages of the repository server
+            </summary>
+            <returns></returns>
+            <response code="200">Operation result object</response>
+        </member>
         <member name="T:BaSyx.API.Http.Controllers.SubmodelController">
             <summary>
             The Submodel Controller

@@ -12,8 +12,6 @@
 using BaSyx.API.ServiceProvider;
 using BaSyx.Models.AdminShell;
 using BaSyx.Models.Connectivity;
-using BaSyx.Models.Extensions;
-using BaSyx.Utils.DependencyInjection;
 using BaSyx.Utils.ResultHandling;
 using BaSyx.Utils.ResultHandling.ResultTypes;
 using Microsoft.AspNetCore.Hosting;
@@ -35,9 +33,6 @@ namespace BaSyx.API.Http.Controllers
         private readonly IAssetAdministrationShellRepositoryServiceProvider aasServiceProvider;
         private readonly ISubmodelRepositoryServiceProvider smServiceProvider;
         private readonly IWebHostEnvironment hostingEnvironment;
-        private static JsonSerializerOptions _defaultSerializerOptions;
-        private static JsonSerializerOptions _metadataSerializerOptions;
-        private static JsonSerializerOptions _fullSerializerOptions;
         private readonly AssetAdministrationShellRepositoryController aasController;
         private readonly SubmodelRepositoryController smController;
 
@@ -56,22 +51,6 @@ namespace BaSyx.API.Http.Controllers
 
             aasController = new AssetAdministrationShellRepositoryController(assetAdministrationShellRepositoryAasServiceProvider, hostingEnvironment);
             smController = new SubmodelRepositoryController(submodelRepositoryServiceProvider, hostingEnvironment);
-
-            var services = DefaultImplementation.GetStandardServiceCollection();
-
-            var defaultOptions = new DefaultJsonSerializerOptions();
-            defaultOptions.AddDependencyInjection(new DependencyInjectionExtension(services));
-            _defaultSerializerOptions = defaultOptions.Build();
-
-            var options = new DefaultJsonSerializerOptions();
-            options.AddDependencyInjection(new DependencyInjectionExtension(services));
-            options.AddMetadataSubmodelElementConverter();
-            _metadataSerializerOptions = options.Build();
-
-            var options3 = new DefaultJsonSerializerOptions();
-            options3.AddDependencyInjection(new DependencyInjectionExtension(services));
-            options3.AddFullSubmodelElementConverter();
-            _fullSerializerOptions = options3.Build();
         }
 
         /// <summary>
@@ -2035,6 +2014,23 @@ namespace BaSyx.API.Http.Controllers
         {
             return smController.SubmodelRepo_GetOperationAsyncResultValueOnly(submodelIdentifier, idShortPath, handleId);
         }
+
+
+        /// <summary>
+        /// Returns root Messages of the repository server
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Operation result object</response>
+        [HttpGet("/", Name = "GetRoot")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(InvocationResponse), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
+        public IActionResult GetRoot(string submodelIdentifier, string idShortPath, string handleId)
+        {
+            var version = "1.0";
+            return Json(new { message = $"BaSyx dotNet Repo Server v{version}" });
+        }
+
         #endregion     
     }
 }
