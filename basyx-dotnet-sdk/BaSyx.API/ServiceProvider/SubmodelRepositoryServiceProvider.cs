@@ -98,6 +98,26 @@ namespace BaSyx.API.ServiceProvider
                     new Message(MessageType.Error, "Could not retrieve Submodel Service Provider"));
         }
 
+        public IResult ReplaceSubmodel(Identifier id, ISubmodel submodel)
+        {
+            var retrievedSubmodelServiceProvider = GetSubmodelServiceProvider(id);
+            if (!retrievedSubmodelServiceProvider.TryGetEntity(out ISubmodelServiceProvider serviceProvider))
+                return new Result<ISubmodel>(false,
+                    new Message(MessageType.Error, "Could not retrieve Submodel Service Provider"));
+
+            serviceProvider.ReplaceSubmodel(submodel);
+
+            var unregistered = UnregisterSubmodelServiceProvider(id);
+            if (!unregistered.Success)
+                return new Result<ISubmodel>(unregistered);
+
+            var registered = RegisterSubmodelServiceProvider(submodel.Id, submodel.CreateServiceProvider());
+            if (!registered.Success)
+                return new Result<ISubmodel>(registered);
+
+            return new Result<ISubmodel>(true, serviceProvider.GetBinding());
+        }
+
         public IResult DeleteSubmodel(Identifier id)
         {
             if (string.IsNullOrEmpty(id))

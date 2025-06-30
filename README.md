@@ -21,3 +21,9 @@ All tagged/released packages are available as NuGet packages on nuget.org and ca
 ## Build NuGet Packages on your own
 In order to build your own NuGet packages and use them in your project with the newest commits on the main-branch clone or download this repository, then execute **Setup_BaSyx.bat** and **Build_BaSyx.bat** afterwards. 
 Make sure Visual Studio is closed the first time you run these scripts. The first script will add a new folder **basyx-dotnet-nuget-packages** and add this folder as NuGet package source to the system. The second script will build the NuGet packages and put them into the mentioned folder. (To build the NuGet packages in Visual Studio don't forget to change the Solution Configuration to *Release*)
+
+# New implementations since fork
+- Fix Swagger UI for Repos (Ignore PostAASXPackages)
+- Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
+- Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
+- Add implementation `ReplaceSubmodel` for {put} "/submodels/{submodelIdentifier}" for complete replace of the submodel (ISubmodelRepositoryInterface)
