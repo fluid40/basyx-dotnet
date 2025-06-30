@@ -6,12 +6,12 @@ WORKDIR /src
 COPY . .
 
 # Restore dependencies
-RUN dotnet restore basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj
+RUN dotnet restore basyx-dotnet-applications/BaSyx.Repo.Server.Http.App/BaSyx.Repo.Server.Http.App.csproj
 
 # Rebuild project (including all dependencies)
-RUN dotnet build basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj -c Release --no-restore --no-incremental
+RUN dotnet build basyx-dotnet-applications/BaSyx.Repo.Server.Http.App/BaSyx.Repo.Server.Http.App.csproj -c Release --no-restore --no-incremental
 
-RUN dotnet publish basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj -c Release -o /app/publish \
+RUN dotnet publish basyx-dotnet-applications/BaSyx.Repo.Server.Http.App/BaSyx.Repo.Server.Http.App.csproj -c Release -o /app/publish \
     --no-restore --no-build /p:PublishReadyToRun=false
 
 # -------- Runtime Stage --------
@@ -20,4 +20,4 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "BaSyx.AASX.SM.Server.Http.App.dll"]
+ENTRYPOINT ["dotnet", "BaSyx.Repo.Server.Http.App.dll"]
