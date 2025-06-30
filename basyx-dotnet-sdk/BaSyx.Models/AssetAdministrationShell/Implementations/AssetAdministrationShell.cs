@@ -24,28 +24,13 @@ namespace BaSyx.Models.AdminShell
         [JsonIgnore]
         public IElementContainer<ISubmodel> Submodels { get; set; }
 
-        private List<IReference<ISubmodel>> _submodelRefs;
+        private List<IReference<ISubmodel>> _submodelRefs = [];
 
         [JsonPropertyName("submodels")]
-        public IEnumerable<IReference<ISubmodel>> SubmodelReferences 
+        public IList<IReference<ISubmodel>> SubmodelReferences 
         { 
-            get
-            {
-                return _submodelRefs;
-
-                _submodelRefs = new List<IReference<ISubmodel>>();
-                var safeSubmodels = Submodels.ToList();
-                foreach (var submodel in safeSubmodels)
-                {
-                    var reference = submodel.CreateReference();
-                    _submodelRefs.Add(reference);
-                }
-                return _submodelRefs;
-            }
-            set
-            {
-                _submodelRefs = value.ToList();
-            }
+            get => _submodelRefs;
+            set => _submodelRefs = value.ToList();
         }
         public IReference<IAssetAdministrationShell> DerivedFrom { get; set; }     
         public ModelType ModelType => ModelType.AssetAdministrationShell;
