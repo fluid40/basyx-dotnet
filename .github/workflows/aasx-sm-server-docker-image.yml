@@ -3,7 +3,7 @@ name: Build and push Docker image
 on:
   push:
     branches:
-      - main
+      - build-new-repo-server-infrastructure
     paths:
       - 'basyx-dotnet-tests/**'
       - '.github/workflows/aasx-sm-server-docker-image.yml'
