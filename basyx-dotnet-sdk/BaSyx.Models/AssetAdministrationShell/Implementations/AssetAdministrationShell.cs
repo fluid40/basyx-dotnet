@@ -29,8 +29,10 @@ namespace BaSyx.Models.AdminShell
         [JsonPropertyName("submodels")]
         public IEnumerable<IReference<ISubmodel>> SubmodelReferences 
         { 
-            get 
+            get
             {
+                return _submodelRefs;
+
                 _submodelRefs = new List<IReference<ISubmodel>>();
                 var safeSubmodels = Submodels.ToList();
                 foreach (var submodel in safeSubmodels)

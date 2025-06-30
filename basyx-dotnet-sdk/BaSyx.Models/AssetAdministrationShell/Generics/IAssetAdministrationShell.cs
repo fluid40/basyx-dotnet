@@ -26,7 +26,7 @@ namespace BaSyx.Models.AdminShell
         IReference<IAssetAdministrationShell> DerivedFrom { get; }
 
         /// <summary>
-        /// Meta information about the asset the Asset Administration Shell is representing.
+        /// Meta information about the Asset Administration Shell is representing.
         /// </summary>
         [DataMember(EmitDefaultValue = false, IsRequired = false, Name = "assetInformation")]
         IAssetInformation AssetInformation { get; }
