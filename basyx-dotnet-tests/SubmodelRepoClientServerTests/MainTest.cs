@@ -458,6 +458,11 @@ namespace SubmodelRepoClientServerTests
             return ((ISubmodelRepositoryInterface)RepoClient).UpdateSubmodel(id, submodel);
         }
 
+        public IResult ReplaceSubmodel(Identifier id, ISubmodel submodel)
+        {
+            return ((ISubmodelRepositoryInterface)RepoClient).ReplaceSubmodel(id, submodel);
+        }
+
         public IResult DeleteSubmodel(Identifier id)
         {
             return ((ISubmodelRepositoryInterface)RepoClient).DeleteSubmodel(id);

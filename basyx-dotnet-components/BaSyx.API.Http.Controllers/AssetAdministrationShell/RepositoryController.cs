@@ -2028,7 +2028,10 @@ namespace BaSyx.API.Http.Controllers
         public IActionResult GetRoot(string submodelIdentifier, string idShortPath, string handleId)
         {
             var version = "1.0";
-            return Json(new { message = $"BaSyx dotNet Repo Server v{version}" });
+            return Json(new { 
+                message = $"BaSyx dotNet Repo Server v{version}",
+                status_code = 200,
+            });
         }
 
         #endregion     

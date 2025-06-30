@@ -26,4 +26,4 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Fix Swagger UI for Repos (Ignore PostAASXPackages)
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
 - Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
-- Add implementation `ReplaceSubmodel` for {put} "/submodels/{submodelIdentifier}" for complete replace of the submodel (ISubmodelRepositoryInterface)
+- Add implementation `ReplaceSubmodel` for {put} "/submodels/{submodelIdentifier}" for complete replace of the submodel incl. ID (ISubmodelRepositoryInterface)

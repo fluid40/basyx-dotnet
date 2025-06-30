@@ -44,6 +44,6 @@ namespace BaSyx.Models.AdminShell
         /// Temporarily, no submodel might be assigned to the Asset Administration Shell.
         /// </summary>
         [JsonPropertyName("submodels"), DataMember(EmitDefaultValue = false, IsRequired = false, Name = "submodels")]
-        IEnumerable<IReference<ISubmodel>> SubmodelReferences { get; }
+        IList<IReference<ISubmodel>> SubmodelReferences { get; }
     }
 }

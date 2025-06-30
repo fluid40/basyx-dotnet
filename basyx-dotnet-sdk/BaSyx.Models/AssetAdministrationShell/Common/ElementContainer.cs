@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace BaSyx.Models.AdminShell
 {
@@ -504,6 +505,13 @@ namespace BaSyx.Models.AdminShell
             }
             else
             {
+                // create reference for submodel
+                if (element is ISubmodel submodel && Parent is IAssetAdministrationShell aas)
+                {
+                    var reference = submodel.CreateReference();
+                    aas.SubmodelReferences.Add(reference);
+                }
+
                 node = new ElementContainer<TElement>(Parent, element, this);
                 if (isListParent)
                     node.AppendRootPath(this.Path, true);
@@ -709,6 +717,15 @@ namespace BaSyx.Models.AdminShell
         public bool Remove(TElement item)
         {
             var removed = _children.RemoveAll(c => c.IdShort == item.IdShort);
+
+            // remove reference for the submodel
+            if (item is ISubmodel submodel && Parent is IAssetAdministrationShell aas)
+            {
+                var reference = aas.SubmodelReferences.FirstOrDefault(c => c.First.Value == submodel.Id);
+                if (reference != null)
+                    aas.SubmodelReferences.Remove(reference);
+            }
+
             if (removed > 0)
             {
                 OnDeleted?.Invoke(this, new ElementContainerEventArgs<TElement>(this, default, ChangedEventType.Deleted) { ElementIdShort = item.IdShort });

@@ -24,10 +24,10 @@ namespace BaSyx.Models.AdminShell
         [JsonIgnore]
         public IElementContainer<ISubmodel> Submodels { get; set; }
 
-        private List<IReference<ISubmodel>> _submodelRefs;
+        private List<IReference<ISubmodel>> _submodelRefs = new();
 
         [JsonPropertyName("submodels")]
-        public IEnumerable<IReference<ISubmodel>> SubmodelReferences 
+        public IList<IReference<ISubmodel>> SubmodelReferences 
         { 
             get
             {
