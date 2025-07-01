@@ -8,7 +8,7 @@
       <ContentPath>Content</ContentPath>
       <!-- The URLs on which your server is accessible -->
       <Urls>
-        <Url>http://+:5043</Url>
+        <Url>http://0.0.0.0:5043</Url>
 		    <!-- https can be used as well but don't forget to consider certicates (e.g. dotnet developer certificates) -->
         <!-- <Url>https://+:5498</Url> -->
       </Urls>

@@ -16,16 +16,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MyAssetPackage.aasx" />
     <None Remove="RegistryClientSettings.xml" />
     <None Remove="ServerSettings.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="MyAssetPackage.aasx">
+    <Content Include="RegistryClientSettings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="RegistryClientSettings.xml">
+    <Content Include="DockerServerSettings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ServerSettings.xml">
