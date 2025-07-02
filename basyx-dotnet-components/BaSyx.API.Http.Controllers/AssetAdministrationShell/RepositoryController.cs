@@ -22,8 +22,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BaSyx.API.Http.Controllers
 {
@@ -368,7 +370,7 @@ namespace BaSyx.API.Http.Controllers
             if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
                 return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
 
-            return smController.GetSubmodelById(submodelIdentifier);
+            return smController.GetSubmodelById(submodelIdentifier, level, extent);
         }
         
         /// <summary>
@@ -486,7 +488,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_GetSubmodelMetadata(string aasIdentifier, string submodelIdentifier)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.DeleteSubmodelById(submodelIdentifier);
         }
 
         /// <summary>
@@ -506,7 +523,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 500)]
         public IActionResult ShellRepo_PatchSubmodelMetadata(string aasIdentifier, string submodelIdentifier, [FromBody] ISubmodel submodel)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_PatchSubmodelMetadata(submodelIdentifier, submodel);
         }
 
         /// <summary>
@@ -525,7 +557,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_GetSubmodelValue(string aasIdentifier, string submodelIdentifier, [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_GetSubmodelValue(submodelIdentifier, level, extent);
         }
 
         /// <summary>
@@ -545,7 +592,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 500)]
         public IActionResult ShellRepo_PatchSubmodelValueOnly(string aasIdentifier, string submodelIdentifier, [FromBody] JsonDocument requestBody)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_PatchSubmodelValueOnly(submodelIdentifier, requestBody);
         }
 
         /// <summary>
@@ -564,7 +626,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 500)]
         public IActionResult ShellRepo_GetSubmodelReference(string aasIdentifier, string submodelIdentifier)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.GetAllSubmodelsReference(submodelIdentifier);
         }
 
         /// <summary>
@@ -584,7 +661,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 500)]
         public IActionResult ShellRepo_GetSubmodelPath(string aasIdentifier, string submodelIdentifier, [FromQuery] RequestLevel level = default)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_GetSubmodelPath(submodelIdentifier, level);
         }
 
         /// <summary>
@@ -606,7 +698,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_GetAllSubmodelElements(string aasIdentifier, string submodelIdentifier, [FromQuery] int limit = 100, [FromQuery] string cursor = "", [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_GetAllSubmodelElements(submodelIdentifier, limit, cursor, level, extent);
         }
 
         /// <summary>
@@ -626,7 +733,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_PostSubmodelElement(string aasIdentifier, string submodelIdentifier, [FromBody] ISubmodelElement submodelElement)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_PostSubmodelElement(submodelIdentifier, submodelElement);
         }
 
         /// <summary>
@@ -648,7 +770,22 @@ namespace BaSyx.API.Http.Controllers
 		[ProducesResponseType(typeof(Result), 500)]
 		public IActionResult ShellRepo_GetAllSubmodelElementsMetadata(string aasIdentifier, string submodelIdentifier, [FromQuery] int limit = 100, [FromQuery] string cursor = "", [FromQuery] RequestLevel level = default)
 		{
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_GetAllSubmodelElementsMetadata(submodelIdentifier, limit, cursor, level);
         }
 
         /// <summary>
@@ -671,8 +808,23 @@ namespace BaSyx.API.Http.Controllers
 		[ProducesResponseType(typeof(Result), 500)]
 		public IActionResult ShellRepo_GetAllSubmodelElementsValueOnly(string aasIdentifier, string submodelIdentifier, [FromQuery] int limit = 100, [FromQuery] string cursor = "", [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
 		{
-            throw new NotImplementedException();
-		}
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.SubmodelRepo_GetAllSubmodelElementsValueOnly(submodelIdentifier, limit, cursor, level);
+        }
 
         /// <summary>
         /// Returns the References of all submodel elements
