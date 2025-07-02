@@ -1535,7 +1535,7 @@
         </member>
         <member name="M:BaSyx.API.Http.Controllers.RepositoryController.ShellRepo_GetSubmodelElementByPathMetadata(System.String,System.String,System.String,BaSyx.Models.AdminShell.RequestLevel)">
             <summary>
-            Returns the matadata attributes of a specific submodel element from the Submodel at a specified
+            Returns the metadata attributes of a specific submodel element from the Submodel at a specified
             </summary>
             <param name="aasIdentifier">The Asset Administration Shell’s unique id (BASE64-URL-encoded)</param>
             <param name="submodelIdentifier">The Submodel’s unique id (BASE64-URL-encoded)</param>
