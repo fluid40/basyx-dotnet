@@ -1535,7 +1535,7 @@
         </member>
         <member name="M:BaSyx.API.Http.Controllers.RepositoryController.ShellRepo_GetSubmodelElementByPathMetadata(System.String,System.String,System.String,BaSyx.Models.AdminShell.RequestLevel)">
             <summary>
-            Returns the matadata attributes of a specific submodel element from the Submodel at a specified
+            Returns the metadata attributes of a specific submodel element from the Submodel at a specified
             </summary>
             <param name="aasIdentifier">The Asset Administration Shell’s unique id (BASE64-URL-encoded)</param>
             <param name="submodelIdentifier">The Submodel’s unique id (BASE64-URL-encoded)</param>
@@ -2201,6 +2201,13 @@
             <returns></returns>
             <response code="200">Operation result object</response>
             <inheritdoc cref="M:BaSyx.API.Http.Controllers.SubmodelController.GetOperationAsyncResultValueOnly(System.String,System.String)"/>
+        </member>
+        <member name="M:BaSyx.API.Http.Controllers.RepositoryController.GetRoot(System.String,System.String,System.String)">
+            <summary>
+            Returns root Messages of the repository server
+            </summary>
+            <returns></returns>
+            <response code="200">Operation result object</response>
         </member>
         <member name="T:BaSyx.API.Http.Controllers.SubmodelController">
             <summary>
