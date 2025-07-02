@@ -24,8 +24,6 @@ namespace BaSyx.API.Interfaces
 
         IResult UpdateSubmodel(Identifier id, ISubmodel submodel);
 
-        IResult ReplaceSubmodel(Identifier id, ISubmodel submodel);
-
         IResult DeleteSubmodel(Identifier id);
     }
 }

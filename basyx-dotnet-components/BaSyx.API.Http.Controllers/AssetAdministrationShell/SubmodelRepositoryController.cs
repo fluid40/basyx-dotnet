@@ -319,7 +319,7 @@ namespace BaSyx.API.Http.Controllers
 
             submodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
 
-            var result = serviceProvider.ReplaceSubmodel(submodelIdentifier, submodel);
+            var result = serviceProvider.UpdateSubmodel(submodelIdentifier, submodel);
             return result.CreateActionResult(CrudOperation.Update);
         }
 
