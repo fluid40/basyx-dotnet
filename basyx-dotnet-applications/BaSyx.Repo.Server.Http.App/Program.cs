@@ -9,17 +9,13 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 
-using System.Collections.Generic;
 using BaSyx.API.ServiceProvider;
 using BaSyx.Common.UI;
 using BaSyx.Common.UI.Swagger;
 using BaSyx.Models.Connectivity;
 using BaSyx.Servers.AdminShell.Http;
 using BaSyx.Utils.Settings;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using CommandLine;
 using NLog;
 using NLog.Web;
 using Endpoint = BaSyx.Models.Connectivity.Endpoint;
@@ -30,36 +26,33 @@ namespace BaSyx.AASX.SM.Server.Http.App
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
+        public class Options
+        {
+            [Option('s', "settings", Required = false, HelpText = "Path to the ServerSettings.xml")]
+            public string SettingsFilePath { get; set; }
+        }
 
         static void Main(string[] args)
         {
             Logger.Info("Starting Repo Http-Server...");
-            
-            Logger.Info("Starting Submodel Http-Server...");
 
             // AAS Repo Server
-            var settings = ServerSettings.CreateSettings();
-            settings.ServerConfig.Hosting.ContentPath = "Content";
-            settings.ServerConfig.Hosting.Environment = "Development";
-            settings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:5043");
+
+            var settings = GetSettings(args);
+            var endpoints = settings.ServerConfig.Hosting.Urls.ConvertAll(url =>
+            {
+                var address = url.Replace("+", "127.0.0.1");
+                Logger.Info("Using " + address + " as base endpoint url");
+                return new Endpoint(address, InterfaceName.AssetAdministrationShellRepositoryInterface);
+            });
 
             var httpServer = new RepositoryHttpServer(settings);
             httpServer.WebHostBuilder.UseNLog();
-            var smRepositoryService = new SubmodelRepositoryServiceProvider();
-            var smEndpoints = settings.ServerConfig.Hosting.Urls.ConvertAll(url =>
-            {
-                Logger.Info("Using " + url + " as sm repository base endpoint url");
-                return new Endpoint(url, InterfaceName.AssetAdministrationShellRepositoryInterface);
-            });
-            smRepositoryService.UseDefaultEndpointRegistration(smEndpoints);
 
+            var smRepositoryService = new SubmodelRepositoryServiceProvider();
+            smRepositoryService.UseDefaultEndpointRegistration(endpoints);
             var aasRepositoryService = new AssetAdministrationShellRepositoryServiceProvider();
-            var aasEndpoints = settings.ServerConfig.Hosting.Urls.ConvertAll(url =>
-            {
-                Logger.Info("Using " + url + " as aas repository base endpoint url");
-                return new Endpoint(url, InterfaceName.AssetAdministrationShellRepositoryInterface);
-            });
-            aasRepositoryService.UseDefaultEndpointRegistration(aasEndpoints);
+            aasRepositoryService.UseDefaultEndpointRegistration(endpoints);
 
             httpServer.SetServiceProvider(aasRepositoryService, smRepositoryService);
 
@@ -67,6 +60,30 @@ namespace BaSyx.AASX.SM.Server.Http.App
             httpServer.AddSwagger(Interface.All);
 
             httpServer.Run();
+        }
+
+        private static ServerSettings CreateDefaultSetting()
+        {
+            var settings = ServerSettings.CreateSettings();
+            settings.ServerConfig.Hosting.ContentPath = "Content";
+            settings.ServerConfig.Hosting.Environment = "Development";
+            settings.ServerConfig.Hosting.Urls.Add($"http://127.0.0.1:5043");
+            return settings;
+        }
+
+        private static ServerSettings GetSettings(string[] args)
+        {
+            var options = new Options();
+            Parser.Default.ParseArguments<Options>(args)
+                   .WithParsed(o => options = o);
+
+            var settingsFilePath = "./ServerSettings.xml";
+            if (!string.IsNullOrEmpty(options.SettingsFilePath))
+                settingsFilePath = options.SettingsFilePath;
+
+            Logger.Info("Try loading settings from: " + settingsFilePath);
+
+            return ServerSettings.LoadSettingsFromFile(settingsFilePath) ?? CreateDefaultSetting();
         }
     }
 }

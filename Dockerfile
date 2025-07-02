@@ -21,3 +21,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "BaSyx.Repo.Server.Http.App.dll"]
+CMD ["-s", "./DockerServerSettings.xml"]
