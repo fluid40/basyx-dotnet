@@ -16,9 +16,12 @@ using BaSyx.Utils.ResultHandling;
 using BaSyx.Utils.ResultHandling.ResultTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -350,12 +353,31 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_GetSubmodel(string aasIdentifier, string submodelIdentifier, [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
         {
-            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult result, out IAssetAdministrationShellServiceProvider provider))
-                return result;
+            // check if submodel exists
+            if (smServiceProvider.IsNullOrNotFound(submodelIdentifier, out IActionResult smResult, out ISubmodelServiceProvider smProvider))
+                return smResult;
 
-            return GetSubmodelById(submodelIdentifier, level, extent);
+            var retrievedSm = smProvider.RetrieveSubmodel();
+
+            if (!retrievedSm.Success || retrievedSm.Entity == null)
+                return retrievedSm.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != retrievedSm.Entity.Id))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset Administration shell not contains submodel with ID '{retrievedSm.Entity.Id}'")));
+
+            return retrievedSm.CreateActionResult(CrudOperation.Retrieve);
         }
-
+        
         /// <summary>
         /// Replaces the Submodel
         /// </summary>
