@@ -17,7 +17,6 @@ using BaSyx.Servers.AdminShell.Http;
 using BaSyx.Utils.Settings;
 using CommandLine;
 using NLog;
-using System.IO;
 using NLog.Web;
 using Endpoint = BaSyx.Models.Connectivity.Endpoint;
 
@@ -42,9 +41,9 @@ namespace BaSyx.AASX.SM.Server.Http.App
             var settings = GetSettings(args);
             var endpoints = settings.ServerConfig.Hosting.Urls.ConvertAll(url =>
             {
-                string address = url.Replace("+", "127.0.0.1");
-                Logger.Info("Using " + url + " as base endpoint url");
-                return new Endpoint(url, InterfaceName.AssetAdministrationShellRepositoryInterface);
+                var address = url.Replace("+", "127.0.0.1");
+                Logger.Info("Using " + address + " as base endpoint url");
+                return new Endpoint(address, InterfaceName.AssetAdministrationShellRepositoryInterface);
             });
 
             var httpServer = new RepositoryHttpServer(settings);
@@ -78,7 +77,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
             Parser.Default.ParseArguments<Options>(args)
                    .WithParsed(o => options = o);
 
-            string settingsFilePath = "./ServerSettings.xml";
+            var settingsFilePath = "./ServerSettings.xml";
             if (!string.IsNullOrEmpty(options.SettingsFilePath))
                 settingsFilePath = options.SettingsFilePath;
 
