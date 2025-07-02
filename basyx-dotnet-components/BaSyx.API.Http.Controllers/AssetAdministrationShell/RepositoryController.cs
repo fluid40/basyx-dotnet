@@ -453,7 +453,22 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 404)]
         public IActionResult ShellRepo_DeleteSubmodel(string aasIdentifier, string submodelIdentifier)
         {
-            throw new NotImplementedException();
+            var decodedSubmodelIdentifier = ResultHandling.Base64UrlDecode(submodelIdentifier);
+
+            // check if aas exists
+            if (aasServiceProvider.IsNullOrNotFound(aasIdentifier, out IActionResult aasResult, out IAssetAdministrationShellServiceProvider aasProvider))
+                return aasResult;
+
+            var retrievedAas = aasProvider.RetrieveAssetAdministrationShell();
+
+            if (!retrievedAas.Success || retrievedAas.Entity == null)
+                return retrievedAas.CreateActionResult(CrudOperation.Retrieve);
+
+            // check if ass contains sm
+            if (retrievedAas.Entity.SubmodelReferences.All(e => e.First.Value != decodedSubmodelIdentifier))
+                return new NotFoundObjectResult(new Result(false, new NotFoundMessage($"Asset administration shell does not contain a submodel with ID '{decodedSubmodelIdentifier}'")));
+
+            return smController.DeleteSubmodelById(submodelIdentifier);
         }
 
         /// <summary>
