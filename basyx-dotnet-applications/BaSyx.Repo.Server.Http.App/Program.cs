@@ -62,7 +62,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
             httpServer.Run();
         }
 
-        static ServerSettings CreateDefaultSetting()
+        private static ServerSettings CreateDefaultSetting()
         {
             var settings = ServerSettings.CreateSettings();
             settings.ServerConfig.Hosting.ContentPath = "Content";
@@ -71,7 +71,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
             return settings;
         }
 
-        static ServerSettings GetSettings(string[] args)
+        private static ServerSettings GetSettings(string[] args)
         {
             var options = new Options();
             Parser.Default.ParseArguments<Options>(args)
