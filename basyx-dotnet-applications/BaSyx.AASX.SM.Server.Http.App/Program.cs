@@ -9,12 +9,12 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using BaSyx.API.ServiceProvider;
 using BaSyx.Common.UI;
 using BaSyx.Common.UI.Swagger;
 using BaSyx.Models.Connectivity;
+using BaSyx.Registry.ReferenceImpl.InMemory;
+using BaSyx.Registry.Server.Http;
 using BaSyx.Servers.AdminShell.Http;
 using BaSyx.Utils.Settings;
 using CommandLine;
@@ -25,6 +25,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
+using System;
+using System.Collections.Generic;
+using BaSyx.Discovery.mDNS;
 using Endpoint = BaSyx.Models.Connectivity.Endpoint;
 
 namespace BaSyx.AASX.SM.Server.Http.App
@@ -50,59 +53,77 @@ namespace BaSyx.AASX.SM.Server.Http.App
 
         static void Main(string[] args)
         {
-            Logger.Info("Starting AASX Http-Server...");
-
             var reverseProxyUrl = GetUrl(args);
             var submodelRepoPort = reverseProxyUrl.Port + 1;
             var aasRepoPort = reverseProxyUrl.Port + 2;
+            var registryPort = reverseProxyUrl.Port + 3;
 
-            // SM Repo Server
+            // Build the Submodel Repository server
+            Logger.Info("Starting Submodel Repository Http-Server...");
+
             var smRepoSettings = ServerSettings.CreateSettings();
             smRepoSettings.ServerConfig.Hosting.ContentPath = "SubmodelContent";
             smRepoSettings.ServerConfig.Hosting.Environment = "Development";
             smRepoSettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{submodelRepoPort}");
 
+            var smRepositoryService = new SubmodelRepositoryServiceProvider();
+            smRepositoryService.UseDefaultEndpointRegistration(new List<IEndpoint> { new Endpoint($"http://0.0.0.0:{submodelRepoPort}", InterfaceName.SubmodelRepositoryInterface) });
+            
             var smRepositoryServer = new SubmodelRepositoryHttpServer(smRepoSettings);
             smRepositoryServer.WebHostBuilder.UseNLog();
-            var smRepositoryService = new SubmodelRepositoryServiceProvider();
-            var smEndpoints = smRepoSettings.ServerConfig.Hosting.Urls.ConvertAll(c =>
-            {
-                Logger.Info("Using " + c + " as submodel repository base endpoint url");
-                return new Endpoint(c, InterfaceName.SubmodelInterface);
-            });
-            smRepositoryService.UseDefaultEndpointRegistration(smEndpoints);
             smRepositoryServer.SetServiceProvider(smRepositoryService);
-
             smRepositoryServer.AddBaSyxUI(PageNames.SubmodelRepositoryServer);
             smRepositoryServer.AddSwagger(Interface.SubmodelRepository);
 
-            //smRepositoryServer.Run();
             _ = smRepositoryServer.RunAsync();
 
-            Logger.Info("Starting Submodel Http-Server...");
+            // Build the AAS Repository server
+            Logger.Info("Starting AAS Repository Http-Server...");
 
-            // AAS Repo Server
             var aasRepoSettings = ServerSettings.CreateSettings();
             aasRepoSettings.ServerConfig.Hosting.ContentPath = "AASContent";
             aasRepoSettings.ServerConfig.Hosting.Environment = "Development";
             aasRepoSettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{aasRepoPort}");
 
+            var aasRepositoryService = new AssetAdministrationShellRepositoryServiceProvider();
+            aasRepositoryService.UseDefaultEndpointRegistration(new List<IEndpoint> { new Endpoint($"http://0.0.0.0:{aasRepoPort}", InterfaceName.AssetAdministrationShellRepositoryInterface) });
+            
             var aasRepositoryServer = new AssetAdministrationShellRepositoryHttpServer(aasRepoSettings);
             aasRepositoryServer.WebHostBuilder.UseNLog();
-            var aasRepositoryService = new AssetAdministrationShellRepositoryServiceProvider();
-            var aasEndpoints = aasRepoSettings.ServerConfig.Hosting.Urls.ConvertAll(url =>
-            {
-                Logger.Info("Using " + url + " as aas repository base endpoint url");
-                return new Endpoint(url, InterfaceName.AssetAdministrationShellRepositoryInterface);
-            });
-            aasRepositoryService.UseDefaultEndpointRegistration(aasEndpoints);
             aasRepositoryServer.SetServiceProvider(aasRepositoryService);
-
             aasRepositoryServer.AddBaSyxUI(PageNames.AssetAdministrationShellRepositoryServer);
             aasRepositoryServer.AddSwagger(Interface.AssetAdministrationShellRepository);
-
-            //aasRepositoryServer.Run();
+            
             _ = aasRepositoryServer.RunAsync();
+
+            // Build the AAS registry Server
+            Logger.Info("Starting registry Http-Server...");
+
+            var registrySettings = ServerSettings.CreateSettings();
+            registrySettings.ServerConfig.Hosting.ContentPath = "SubmodelContent";
+            registrySettings.ServerConfig.Hosting.Environment = "Development";
+            registrySettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{registryPort}");
+
+            var registryImpl = new InMemoryRegistry();
+            var registryServer = new RegistryHttpServer(registrySettings);
+            registryServer.WebHostBuilder.UseNLog();
+            registryServer.AddBaSyxUI(PageNames.AssetAdministrationShellRegistryServer);
+            registryServer.AddSwagger(Interface.AssetAdministrationShellRegistry);
+            registryServer.SetRegistryProvider(registryImpl);
+
+            //Start mDNS Discovery ability when the server successfully booted up
+            registryServer.ApplicationStarted = () =>
+            {
+                registryImpl.StartDiscovery();
+            };
+
+            //Start mDNS Discovery when the server is shutting down
+            registryServer.ApplicationStopping = () =>
+            {
+                registryImpl.StopDiscovery();
+            };
+
+            _ = registryServer.RunAsync();
 
             // Start YARP reverse proxy on public port (e.g. 5043)
             var builder = WebApplication.CreateBuilder(args);
@@ -114,18 +135,32 @@ namespace BaSyx.AASX.SM.Server.Http.App
                     [
                         new Yarp.ReverseProxy.Configuration.RouteConfig
                         {
+                            RouteId = "submodels",
+                            Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/submodels/{**catch-all}" },
+                            ClusterId = "submodelCluster"
+                        },
+                        new Yarp.ReverseProxy.Configuration.RouteConfig
+                        {
                             RouteId = "shells",
                             Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/shells/{**catch-all}" },
                             ClusterId = "aasCluster"
                         },
                         new Yarp.ReverseProxy.Configuration.RouteConfig
                         {
-                            RouteId = "submodels",
-                            Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/submodels/{**catch-all}" },
-                            ClusterId = "submodelCluster"
+                            RouteId = "shell-descriptors",
+                            Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/shell-descriptors/{**catch-all}" },
+                            ClusterId = "registryCluster"
                         }
                     ],
                     [
+                        new Yarp.ReverseProxy.Configuration.ClusterConfig
+                        {
+                            ClusterId = "submodelCluster",
+                            Destinations = new Dictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig>
+                            {
+                                { "submodels", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{submodelRepoPort}/" }}
+                            }
+                        },
                         new Yarp.ReverseProxy.Configuration.ClusterConfig
                         {
                             ClusterId = "aasCluster",
@@ -136,10 +171,10 @@ namespace BaSyx.AASX.SM.Server.Http.App
                         },
                         new Yarp.ReverseProxy.Configuration.ClusterConfig
                         {
-                            ClusterId = "submodelCluster",
+                            ClusterId = "registryCluster",
                             Destinations = new Dictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig>
                             {
-                                { "submodels", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{submodelRepoPort}/" }}
+                                { "shell-descriptors", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{registryPort}/" }}
                             }
                         }
                     ]
@@ -151,8 +186,9 @@ namespace BaSyx.AASX.SM.Server.Http.App
             {
                 message = "Welcome to Fluid4.0 AAS / Submodel Server",
                 status_code = 200,
+                submodel_repository_server_url = $"http://127.0.0.1:{submodelRepoPort}/",
                 aas_repository_server_url = $"http://127.0.0.1:{aasRepoPort}/",
-                submodel_repository_server_url = $"http://127.0.0.1:{submodelRepoPort}/"
+                register_server_url = $"http://127.0.0.1:{registryPort}/"
             }));
             app.Run();
         }
