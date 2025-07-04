@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "BaSyx.AASX.SM.Server.Http.App.dll"]
-CMD ["-u", ".http://0.0.0.0:5044"]
+CMD ["-u", "http://0.0.0.0:5044"]
