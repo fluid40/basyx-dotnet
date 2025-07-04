@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "BaSyx.AASX.SM.Server.Http.App"]
-CMD ["-s", "./DockerServerSettings.xml"]
+CMD ["-u", "http://0.0.0.0:5044"]

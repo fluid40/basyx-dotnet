@@ -9,6 +9,7 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using BaSyx.API.ServiceProvider;
 using BaSyx.Common.UI;
@@ -16,10 +17,12 @@ using BaSyx.Common.UI.Swagger;
 using BaSyx.Models.Connectivity;
 using BaSyx.Servers.AdminShell.Http;
 using BaSyx.Utils.Settings;
+using CommandLine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
 using Endpoint = BaSyx.Models.Connectivity.Endpoint;
@@ -30,18 +33,32 @@ namespace BaSyx.AASX.SM.Server.Http.App
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
+        public class Options
+        {
+            [Option('u', "url", Required = false, HelpText = "base url of the reverse proxy in format 'http://127.0.0.1:5044")]
+            public string Url { get; set; }
+        }
+
+        public static UriBuilder GetUrl(string[] args)
+        {
+            var options = new Options();
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(o => options = o);
+
+            return options.Url != null ? new UriBuilder(options.Url) : new UriBuilder("http://127.0.0.1:5044");
+        }
 
         static void Main(string[] args)
         {
             Logger.Info("Starting AASX Http-Server...");
 
-            var reverseProxyUrl = "http://0.0.0.0:5043";
-            var submodelRepoPort = "5041";
-            var aasRepoPort = "5042";
+            var reverseProxyUrl = GetUrl(args);
+            var submodelRepoPort = reverseProxyUrl.Port + 1;
+            var aasRepoPort = reverseProxyUrl.Port + 2;
 
             // SM Repo Server
             var smRepoSettings = ServerSettings.CreateSettings();
-            smRepoSettings.ServerConfig.Hosting.ContentPath = "Content";
+            smRepoSettings.ServerConfig.Hosting.ContentPath = "SubmodelContent";
             smRepoSettings.ServerConfig.Hosting.Environment = "Development";
             smRepoSettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{submodelRepoPort}");
 
@@ -66,7 +83,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
 
             // AAS Repo Server
             var aasRepoSettings = ServerSettings.CreateSettings();
-            aasRepoSettings.ServerConfig.Hosting.ContentPath = "Content";
+            aasRepoSettings.ServerConfig.Hosting.ContentPath = "AASContent";
             aasRepoSettings.ServerConfig.Hosting.Environment = "Development";
             aasRepoSettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{aasRepoPort}");
 
@@ -89,7 +106,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
 
             // Start YARP reverse proxy on public port (e.g. 5043)
             var builder = WebApplication.CreateBuilder(args);
-            builder.WebHost.UseUrls(reverseProxyUrl);
+            builder.WebHost.UseUrls(reverseProxyUrl.ToString());
             Logger.Info($"Reverse Proxy URL: {reverseProxyUrl}");
 
             builder.Services.AddReverseProxy()

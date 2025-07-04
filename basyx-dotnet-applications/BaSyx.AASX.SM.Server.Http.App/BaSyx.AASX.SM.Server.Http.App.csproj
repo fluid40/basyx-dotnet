@@ -15,20 +15,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="MyAssetPackage.aasx" />
-    <None Remove="ServerSettings.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="MyAssetPackage.aasx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ServerSettings.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
   <ItemGroup Condition="Exists('..\..\basyx-dotnet-components\')">
     <ProjectReference Include="..\..\basyx-dotnet-components\BaSyx.Common.UI\BaSyx.Common.UI.csproj" />
     <ProjectReference Include="..\..\basyx-dotnet-components\BaSyx.Common.UI.Swagger\BaSyx.Common.UI.Swagger.csproj" />
