@@ -11,14 +11,14 @@ RUN dotnet restore basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx
 # Rebuild project (including all dependencies)
 RUN dotnet build basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj -c Release --no-restore --no-incremental
 
-RUN dotnet publish basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj -c Release -o /app/publish \
+RUN dotnet publish basyx-dotnet-applications/BaSyx.AASX.SM.Server.Http.App/BaSyx.AASX.SM.Server.Http.App.csproj -c Release -o /app_aas_sm/publish \
     --no-restore --no-build /p:PublishReadyToRun=false
 
 # -------- Runtime Stage --------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-WORKDIR /app
+WORKDIR /app_aas_sm
 
-COPY --from=build /app/publish .
+COPY --from=build /app_aas_sm/publish .
 
 ENTRYPOINT ["dotnet", "BaSyx.AASX.SM.Server.Http.App"]
 CMD ["-u", "http://0.0.0.0:5044"]
