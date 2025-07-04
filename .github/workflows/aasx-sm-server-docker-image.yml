@@ -28,4 +28,4 @@ jobs:
         with:
           file: Dockerfile.Repo.Server
           push: true
-          tags: danielkleinemag/fluid-basyx-dotnet-aasx-server:latest
+          tags: danielkleinemag/fluid-basyx-dotnet-repo-server:latest
