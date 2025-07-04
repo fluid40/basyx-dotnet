@@ -16,14 +16,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="RegistryClientSettings.xml" />
     <None Remove="ServerSettings.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="RegistryClientSettings.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="DockerServerSettings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

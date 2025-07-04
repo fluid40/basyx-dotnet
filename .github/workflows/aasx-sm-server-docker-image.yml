@@ -26,6 +26,6 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile
+          file: Dockerfile.Repo.Server
           push: true
           tags: danielkleinemag/fluid-basyx-dotnet-aasx-server:latest

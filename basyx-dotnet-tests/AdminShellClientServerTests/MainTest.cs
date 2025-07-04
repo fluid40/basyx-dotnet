@@ -141,6 +141,7 @@ namespace AdminShellClientServerTests
         public void Test011_RetrieveAllSubmodelReferences()
         {
             var reference = TestSubmodel.CreateReference();
+            CreateSubmodelReference(reference);
             var result = RetrieveAllSubmodelReferences();
             result.Success.Should().BeTrue();
             result.Entity.Result.Should().HaveCount(2);
