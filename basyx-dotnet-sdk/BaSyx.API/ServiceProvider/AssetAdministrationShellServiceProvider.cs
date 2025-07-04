@@ -96,6 +96,9 @@ namespace BaSyx.API.ServiceProvider
         public virtual void BindTo(IAssetAdministrationShell element)
         {
             _assetAdministrationShell = element;
+            // Update the parent reference of the Submodels collection to point to the new AssetAdministrationShell instance
+            _assetAdministrationShell.Submodels.Parent = _assetAdministrationShell;
+
             ServiceDescriptor = ServiceDescriptor ?? new AssetAdministrationShellDescriptor(_assetAdministrationShell, null);
         }
         public virtual IAssetAdministrationShell GetBinding()
@@ -182,6 +185,7 @@ namespace BaSyx.API.ServiceProvider
                 SubmodelReferences = aas.SubmodelReferences ?? _assetAdministrationShell.SubmodelReferences,
             };
 
+
             // default init as empty list
             tempShell.Description = aas.Description.Any() ? aas.Description : _assetAdministrationShell.Description;
             // default init as empty list
@@ -190,6 +194,8 @@ namespace BaSyx.API.ServiceProvider
             tempShell.EmbeddedDataSpecifications = aas.EmbeddedDataSpecifications.Any() ? aas.EmbeddedDataSpecifications : _assetAdministrationShell.EmbeddedDataSpecifications;
 
             _assetAdministrationShell = tempShell;
+            // Update the parent reference of the Submodels collection to point to the new AssetAdministrationShell instance
+            _assetAdministrationShell.Submodels.Parent = _assetAdministrationShell;
             return new Result(true);
         }
 
@@ -224,6 +230,8 @@ namespace BaSyx.API.ServiceProvider
             };
 
             _assetAdministrationShell = tempShell;
+            // Update the parent reference of the Submodels collection to point to the new AssetAdministrationShell instance
+            _assetAdministrationShell.Submodels.Parent = _assetAdministrationShell;
             return new Result(true);
         }
 
