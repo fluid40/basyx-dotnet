@@ -23,10 +23,16 @@ In order to build your own NuGet packages and use them in your project with the 
 Make sure Visual Studio is closed the first time you run these scripts. The first script will add a new folder **basyx-dotnet-nuget-packages** and add this folder as NuGet package source to the system. The second script will build the NuGet packages and put them into the mentioned folder. (To build the NuGet packages in Visual Studio don't forget to change the Solution Configuration to *Release*)
 
 # New implementations since fork
+## Fixes
 - Fix Swagger UI for Repos (Ignore PostAASXPackages)
+- Fixed a bug where the `Submodels -> Parent` property pointed to the wrong object after the AAS was updated (AssetAdministrationShellServiceProvider)
+
+## Server Application
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
 - Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
 - Rework Submodel reference handling in ASS. The References are no the primary source and will be updated if submodel objects added / removed from AAS (ElementContainer)
+
+## Infrastructure
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
