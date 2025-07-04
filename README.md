@@ -27,3 +27,6 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
 - Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
 - Rework Submodel reference handling in ASS. The References are no the primary source and will be updated if submodel objects added / removed from AAS (ElementContainer)
+- Add Docker support for BaSyx.AASX.SM.Server.Http.App
+- Add Docker support for BaSyx.AASX.SM.Server.Http.App
+- Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
