@@ -17,15 +17,11 @@
 
   <ItemGroup>
     <None Remove="MyAssetPackage.aasx" />
-    <None Remove="RegistryClientSettings.xml" />
     <None Remove="ServerSettings.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="MyAssetPackage.aasx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="RegistryClientSettings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ServerSettings.xml">
