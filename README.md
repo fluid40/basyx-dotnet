@@ -24,9 +24,12 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 
 # New implementations since fork
 ## Fixes
-- Fix Swagger UI for Repos (Ignore PostAASXPackages)
+- Fixed Swagger UI for Repos (Ignore PostAASXPackages)
 - Fixed a bug where the `Submodels -> Parent` property pointed to the wrong object after the AAS was updated (AssetAdministrationShellServiceProvider)
 - Fixed a bug where the `SubmodelElements -> Parent` property pointed to the wrong object after the Submodel was updated (SubmodelServiceProvider)
+
+## Testing
+- Fixed AdminShellClientServerTests
 
 ## Server Application
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
@@ -37,3 +40,4 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
+- Add Nunit tests to GitHub workflow
