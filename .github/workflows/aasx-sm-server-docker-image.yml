@@ -23,8 +23,18 @@ jobs:
         run: dotnet restore
 
       - name: Run tests
-        run: |
-          dotnet test basyx-dotnet-tests/AdminShellClientServerTests/AdminShellClientServerTests.csproj --verbosity normal
+        run: dotnet test basyx-dotnet-tests/AdminShellClientServerTests/AdminShellClientServerTests.csproj --logger "trx;LogFileName=test-admin-shell-client-server-test-results.trx"
+
+      - name: Convert .trx to JUnit
+        uses: gacts/trx2junit@v1
+        with:
+          files: '**/test-admin-shell-client-server-test-results.trx'
+
+      - name: Upload test report
+        uses: actions/upload-test-report@v2
+        with:
+          report: '**/test-admin-shell-client-server-test-results.xml'
+          name: AdminShell Tests
 
   build-image:
     if: github.ref == 'refs/heads/main'
