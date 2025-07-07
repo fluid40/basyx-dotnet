@@ -509,7 +509,9 @@ namespace BaSyx.Models.AdminShell
                 if (element is ISubmodel submodel && Parent is IAssetAdministrationShell aas)
                 {
                     var reference = submodel.CreateReference();
-                    aas.SubmodelReferences.Add(reference);
+                    // add reference only if not already exists
+                    if (!aas.SubmodelReferences.Any(e => Reference.IsEqual(e, reference)))
+                        aas.SubmodelReferences.Add(reference);
                 }
 
                 node = new ElementContainer<TElement>(Parent, element, this);
@@ -721,8 +723,9 @@ namespace BaSyx.Models.AdminShell
             // remove reference for the submodel
             if (item is ISubmodel submodel && Parent is IAssetAdministrationShell aas)
             {
-                var reference = aas.SubmodelReferences.FirstOrDefault(c => c.First.Value == submodel.Id);
-                if (reference != null)
+                var reference = submodel.CreateReference();
+                // check if reference exists
+                if (aas.SubmodelReferences.Any(e => Reference.IsEqual(e, reference)))
                     aas.SubmodelReferences.Remove(reference);
             }
 
