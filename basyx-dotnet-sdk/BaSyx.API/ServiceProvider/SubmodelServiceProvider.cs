@@ -882,12 +882,16 @@ namespace BaSyx.API.ServiceProvider
             updatedSubmodel.EmbeddedDataSpecifications = submodel.EmbeddedDataSpecifications.Any() ? submodel.EmbeddedDataSpecifications : _submodel.EmbeddedDataSpecifications;
 
             _submodel = updatedSubmodel;
+            // Update the parent reference of the SubmodelElements collection to point to the new Submodel instance
+            _submodel.SubmodelElements.Parent = _submodel;
             return new Result(true);
         }
 
         public IResult ReplaceSubmodel(ISubmodel submodel)
         {
             _submodel = submodel;
+            // Update the parent reference of the SubmodelElements collection to point to the new Submodel instance
+            _submodel.SubmodelElements.Parent = _submodel;
             return new Result(true);
         }
     }
