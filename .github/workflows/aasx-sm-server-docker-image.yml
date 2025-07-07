@@ -51,6 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build docker image
     needs: test-admin-shell-client-server
+    needs: test-admin-shell-repo-client-server
 
     steps:
       - name: Checkout code
