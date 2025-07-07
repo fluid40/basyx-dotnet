@@ -86,6 +86,33 @@ namespace BaSyx.Models.AdminShell
         {
             return new Key(Key.GetKeyElementFromType(identifiable.GetType()), identifiable.Id);
         }
+
+        public static bool IsEqual(IReference thisReference, IReference otherReference)
+        {
+            if (otherReference == null)
+                return false;
+
+            // Compare ReferenceType
+            if (thisReference.Type != otherReference.Type)
+                return false;
+
+            // Compare Keys count
+            var thisKeys = thisReference.Keys?.ToList() ?? new List<IKey>();
+            var otherKeys = otherReference.Keys?.ToList() ?? new List<IKey>();
+            if (thisKeys.Count != otherKeys.Count)
+                return false;
+
+            // Compare each key (Type and Value)
+            for (int i = 0; i < thisKeys.Count; i++)
+            {
+                var k1 = thisKeys[i];
+                var k2 = otherKeys[i];
+                if (k1.Type != k2.Type || k1.Value != k2.Value)
+                    return false;
+            }
+
+            return true;
+        }
     }
 
 
@@ -124,6 +151,8 @@ namespace BaSyx.Models.AdminShell
             Type = ReferenceType.ModelReference;
 			Keys = keys;
         }
+
+        
     }
 
 
