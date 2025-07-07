@@ -158,17 +158,20 @@ namespace AdminShellClientServerTests
                 new LangString("en", "My new description")
             };
             TestSubmodel.Description = newDescription;
-            var updated = UpdateSubmodel(TestSubmodel);
+            var updated = UpdateSubmodel(TestSubmodel.Id, TestSubmodel);
             updated.Success.Should().BeTrue();
         }
 
         [TestMethod]
         public void Test101_RetrieveSubmodel()
         {
-            var result = RetrieveSubmodel();
+            var result = RetrieveSubmodel(TestSubmodel.Id);
 
             result.Success.Should().BeTrue();
-            result.Entity.IdShort.Should().BeEquivalentTo(TestSubmodel.IdShort);
+            // Because of the specification the short ID will not be updated in Test100
+            // In this case the TestSubmodel object is created from a reference in Test010 and gets a random IDShort.
+            // So the IDShort will not be equal to the TestSubmodel.IdShort.
+            result.Entity.IdShort.Should().NotBeEquivalentTo(TestSubmodel.IdShort);
             result.Entity.Id.Should().BeEquivalentTo(TestSubmodel.Id);
             result.Entity.Description.Should().BeEquivalentTo(TestSubmodel.Description);
             result.Entity.DisplayName.Should().BeEquivalentTo(TestSubmodel.DisplayName);
@@ -181,7 +184,7 @@ namespace AdminShellClientServerTests
         {
             Property<string> property = new Property<string>("MyTestProperty", "MyTestValue");
 
-            var result = CreateSubmodelElement(".", property);
+            var result = CreateSubmodelElement(TestSubmodel.Id,".", property);
 
             result.Success.Should().BeTrue();
             result.Entity.Should().BeEquivalentTo(property, options =>
@@ -225,14 +228,14 @@ namespace AdminShellClientServerTests
                 }               
             };
             TestSubmodel.SubmodelElements.Add(coll);
-            var created = CreateSubmodelElement(".", coll);
+            var created = CreateSubmodelElement(TestSubmodel.Id, ".", coll);
             created.Success.Should().BeTrue();
         }
 
         [TestMethod]
         public void Test104_RetrieveSubmodelElements()
         {
-            var result = RetrieveSubmodelElements();
+            var result = RetrieveSubmodelElements(TestSubmodel.Id);
             result.Entity.Result.Should().ContainEquivalentOf(TestSubmodel.SubmodelElements["MyCollection"],
                 options =>
                 {
@@ -248,7 +251,7 @@ namespace AdminShellClientServerTests
         [TestMethod]
         public void Test105_RetrieveSubmodelElement()
         {
-            var result = RetrieveSubmodelElement("MyCollection.MySubCollection.MySubSubFloat");
+            var result = RetrieveSubmodelElement(TestSubmodel.Id, "MyCollection.MySubCollection.MySubSubFloat");
             result.Entity.GetValue<float>().Should().Be(3.3f);
         }
 
@@ -261,9 +264,9 @@ namespace AdminShellClientServerTests
                 new LangString("de", "Meine float Property Beschreibung"),
                 new LangString("en", "My float Property description")
             };
-            var updated = UpdateSubmodelElement("MyCollection.MySubCollection.MySubSubFloat", mySubFloat);
+            var updated = UpdateSubmodelElement(TestSubmodel.Id, "MyCollection.MySubCollection.MySubSubFloat", mySubFloat);
             updated.Success.Should().BeTrue();
-            var retrieved = RetrieveSubmodelElement("MyCollection.MySubCollection.MySubSubFloat");
+            var retrieved = RetrieveSubmodelElement(TestSubmodel.Id, "MyCollection.MySubCollection.MySubSubFloat");
             retrieved.Success.Should().BeTrue();
             retrieved.Entity.Description.Should().BeEquivalentTo(mySubFloat.Description);
         }
@@ -271,7 +274,7 @@ namespace AdminShellClientServerTests
         [TestMethod]
         public void Test107_RetrieveSubmodelElementHierarchy()
         {
-            var result = RetrieveSubmodelElement("MyCollection.MySubCollection");
+            var result = RetrieveSubmodelElement(TestSubmodel.Id, "MyCollection.MySubCollection");
             result.Success.Should().BeTrue();
             result.Entity.Cast<ISubmodelElementCollection>().Value.Value["MySubSubInt"].GetValue<int>().Should().Be(6);
         }
@@ -279,14 +282,14 @@ namespace AdminShellClientServerTests
         [TestMethod]
         public void Test108_UpdateSubmodelElementValue()
         {
-            var result = UpdateSubmodelElementValue("MyCollection.MySubCollection.MySubSubDouble", new PropertyValue(new ElementValue(1.8d)));
+            var result = UpdateSubmodelElementValue(TestSubmodel.Id, "MyCollection.MySubCollection.MySubSubDouble", new PropertyValue(new ElementValue(1.8d)));
             result.Success.Should().BeTrue();
         }
 
         [TestMethod]
         public void Test109_RetrieveSubmodelElementValue()
         {
-            var result = RetrieveSubmodelElementValue("MyCollection.MySubCollection.MySubSubDouble");
+            var result = RetrieveSubmodelElementValue(TestSubmodel.Id, "MyCollection.MySubCollection.MySubSubDouble");
             result.Success.Should().BeTrue();
             result.Entity.GetValue<double>().Should().Be(1.8d);
         }
@@ -335,10 +338,10 @@ namespace AdminShellClientServerTests
         [TestMethod]
         public void Test112_DeleteSubmodelElement()
         {
-            var deleted = DeleteSubmodelElement("MyCollection");
+            var deleted = DeleteSubmodelElement(TestSubmodel.Id, "MyCollection");
             deleted.Success.Should().BeTrue();
 
-            var retrieved = RetrieveSubmodelElements();
+            var retrieved = RetrieveSubmodelElements(TestSubmodel.Id);
             retrieved.Success.Should().BeTrue();
             retrieved.Entity.Result.Should().NotContainEquivalentOf(TestSubmodel.SubmodelElements["MyCollection"]);
         }
@@ -352,24 +355,24 @@ namespace AdminShellClientServerTests
 
         #region Submodel Client
 
-        public IResult<ISubmodel> RetrieveSubmodel(RequestLevel level = RequestLevel.Deep, RequestExtent extent = RequestExtent.WithoutBlobValue)
+        public IResult<ISubmodel> RetrieveSubmodel(string submodelId, RequestLevel level = RequestLevel.Deep, RequestExtent extent = RequestExtent.WithoutBlobValue)
         {
-            return Client.RetrieveSubmodel(TestSubmodel.Id, level, extent);
+            return Client.RetrieveSubmodel(submodelId, level, extent);
         }
 
-        public IResult UpdateSubmodel(ISubmodel submodel)
+        public IResult UpdateSubmodel(string submodelId, ISubmodel submodel)
         {
-            return Client.UpdateSubmodel(TestSubmodel.Id, submodel);
+            return Client.UpdateSubmodel(submodelId, submodel);
         }
 
-        public IResult<ISubmodelElement> CreateSubmodelElement(string rootIdShortPath, ISubmodelElement submodelElement)
+        public IResult<ISubmodelElement> CreateSubmodelElement(string submodelId, string rootIdShortPath, ISubmodelElement submodelElement)
         {
-            return Client.CreateSubmodelElement(TestSubmodel.Id, rootIdShortPath, submodelElement);
+            return Client.CreateSubmodelElement(submodelId, rootIdShortPath, submodelElement);
         }
 
-        public IResult DeleteSubmodelElement(string idShortPath)
+        public IResult DeleteSubmodelElement(string submodelId, string idShortPath)
         {
-            return Client.DeleteSubmodelElement(TestSubmodel.Id, idShortPath);
+            return Client.DeleteSubmodelElement(submodelId, idShortPath);
         }
 
         public IResult<InvocationResponse> GetInvocationResult(string idShortPath, string requestId)
@@ -382,29 +385,29 @@ namespace AdminShellClientServerTests
             return Client.InvokeOperation(AdminShell.Submodels["MainSubmodel"].Id, idShortPath, invocationRequest, async);
         }
 
-        public IResult<ISubmodelElement> RetrieveSubmodelElement(string idShortPath)
+        public IResult<ISubmodelElement> RetrieveSubmodelElement(string submodelId, string idShortPath)
         {
-            return Client.RetrieveSubmodelElement(TestSubmodel.Id, idShortPath);
+            return Client.RetrieveSubmodelElement(submodelId, idShortPath);
         }
 
-        public IResult<PagedResult<IElementContainer<ISubmodelElement>>> RetrieveSubmodelElements()
+        public IResult<PagedResult<IElementContainer<ISubmodelElement>>> RetrieveSubmodelElements(string submodelId)
         {
-            return Client.RetrieveSubmodelElements(TestSubmodel.Id);
+            return Client.RetrieveSubmodelElements(submodelId);
         }
 
-        public IResult<ValueScope> RetrieveSubmodelElementValue(string idShortPath)
+        public IResult<ValueScope> RetrieveSubmodelElementValue(string submodelId, string idShortPath)
         {
-            return Client.RetrieveSubmodelElementValue(TestSubmodel.Id, idShortPath);
+            return Client.RetrieveSubmodelElementValue(submodelId, idShortPath);
         }
 
-        public IResult UpdateSubmodelElement(string rootIdShortPath, ISubmodelElement submodelElement)
+        public IResult UpdateSubmodelElement(string submodelId, string rootIdShortPath, ISubmodelElement submodelElement)
         {
-            return Client.UpdateSubmodelElement(TestSubmodel.Id, rootIdShortPath, submodelElement);
+            return Client.UpdateSubmodelElement(submodelId, rootIdShortPath, submodelElement);
         }
 
-        public IResult UpdateSubmodelElementValue(string idShortPath, ValueScope value)
+        public IResult UpdateSubmodelElementValue(string submodelId, string idShortPath, ValueScope value)
         {
-            return Client.UpdateSubmodelElementValue(TestSubmodel.Id, idShortPath, value);
+            return Client.UpdateSubmodelElementValue(submodelId, idShortPath, value);
         }
 
         public Task<IResult<ISubmodel>> RetrieveSubmodelAsync(RequestLevel level = RequestLevel.Deep, RequestExtent extent = RequestExtent.WithoutBlobValue)
