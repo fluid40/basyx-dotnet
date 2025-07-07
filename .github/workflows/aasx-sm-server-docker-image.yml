@@ -26,6 +26,26 @@ jobs:
         run: |
           dotnet test basyx-dotnet-tests/AdminShellClientServerTests/AdminShellClientServerTests.csproj --verbosity normal
   
+  test-admin-shell-repo-client-server:
+    runs-on: ubuntu-latest
+    name: Test AdminShellRepoClientServerTests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run tests
+        run: |
+          dotnet test basyx-dotnet-tests/AdminShellRepoClientServerTests/AdminShellRepoClientServerTests.csproj --verbosity normal
+
   build-image:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
