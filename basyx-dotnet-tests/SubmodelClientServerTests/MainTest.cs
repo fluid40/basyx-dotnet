@@ -131,8 +131,8 @@ namespace SubmodelClientServerTests
             var submodel = RetrieveSubmodel().Entity;
             submodel.SubmodelElements.Count.Should().NotBe(Submodel.SubmodelElements.Count);
             submodel.Category.Should().Be(updatedSubmodel.Category);
-            submodel.IdShort.Should().NotBe(updatedSubmodel.IdShort);
-            submodel.IdShort.Should().Be(Submodel.IdShort);
+            submodel.IdShort.Should().Be(updatedSubmodel.IdShort);
+            submodel.IdShort.Should().NotBe(Submodel.IdShort);
             submodel.DisplayName.Should().NotBeNull();
             submodel.Description[0].Text.Should().Be(updatedSubmodel.Description[0].Text);
 
@@ -170,8 +170,8 @@ namespace SubmodelClientServerTests
             var submodel = RetrieveSubmodel().Entity;
             submodel.SubmodelElements.Count.Should().Be(Submodel.SubmodelElements.Count);
             submodel.Category.Should().Be(updatedSubmodel.Category);
-            submodel.IdShort.Should().NotBe(updatedSubmodel.IdShort);
-            submodel.IdShort.Should().Be(Submodel.IdShort);
+            submodel.IdShort.Should().Be(updatedSubmodel.IdShort);
+            submodel.IdShort.Should().NotBe(Submodel.IdShort);
             submodel.Description[0].Text.Should().Be(updatedSubmodel.Description[0].Text);
             submodel.DisplayName[0].Text.Should().Be(updatedSubmodel.DisplayName[0].Text);
 
@@ -732,7 +732,7 @@ namespace SubmodelClientServerTests
             var submodel = RetrieveSubmodel().Entity;
             submodel.SubmodelElements.Count.Should().BeGreaterThan(2);
             submodel.Category.Should().Be(updatedSubmodel.Category);
-            submodel.IdShort.Should().NotBe(updatedSubmodel.IdShort);
+            submodel.IdShort.Should().Be(updatedSubmodel.IdShort);
 
             ReplaceSubmodel(Submodel);
         }

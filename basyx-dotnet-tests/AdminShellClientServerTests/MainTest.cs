@@ -168,10 +168,7 @@ namespace AdminShellClientServerTests
             var result = RetrieveSubmodel(TestSubmodel.Id);
 
             result.Success.Should().BeTrue();
-            // Because of the specification the short ID will not be updated in Test100
-            // In this case the TestSubmodel object is created from a reference in Test010 and gets a random IDShort.
-            // So the IDShort will not be equal to the TestSubmodel.IdShort.
-            result.Entity.IdShort.Should().NotBeEquivalentTo(TestSubmodel.IdShort);
+            result.Entity.IdShort.Should().BeEquivalentTo(TestSubmodel.IdShort);
             result.Entity.Id.Should().BeEquivalentTo(TestSubmodel.Id);
             result.Entity.Description.Should().BeEquivalentTo(TestSubmodel.Description);
             result.Entity.DisplayName.Should().BeEquivalentTo(TestSubmodel.DisplayName);
