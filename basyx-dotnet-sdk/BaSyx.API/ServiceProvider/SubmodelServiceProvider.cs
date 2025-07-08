@@ -861,7 +861,7 @@ namespace BaSyx.API.ServiceProvider
             if (_submodel == null)
                 return new Result(false, new ErrorMessage("The service provider's inner Submodel object is null"));
 
-            var updatedSubmodel = new Submodel(_submodel.IdShort, _submodel.Id)
+            var updatedSubmodel = new Submodel(submodel.IdShort, _submodel.Id)
             {
                 Administration = submodel.Administration ?? _submodel.Administration,
                 Category = submodel.Category ?? _submodel.Category,
