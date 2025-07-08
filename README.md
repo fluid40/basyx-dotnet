@@ -27,6 +27,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Fixed Swagger UI for Repos (Ignore PostAASXPackages)
 - Fixed a bug where the `Submodels -> Parent` property pointed to the wrong object after the AAS was updated (AssetAdministrationShellServiceProvider)
 - Fixed a bug where the `SubmodelElements -> Parent` property pointed to the wrong object after the Submodel was updated (SubmodelServiceProvider)
+- Rework Submodel reference handling in ASS. The References are no the primary source and will be updated if submodel objects added / removed from AAS (ElementContainer)
 
 ## Testing
 - Fixed AdminShellClientServerTests
@@ -37,7 +38,6 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 ## Server Applications
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
 - Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
-- Rework Submodel reference handling in ASS. The References are no the primary source and will be updated if submodel objects added / removed from AAS (ElementContainer)
 
 ## Infrastructure
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
