@@ -31,6 +31,8 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 ## Testing
 - Fixed AdminShellClientServerTests
 - Fixed AdminShellRepoClientServerTests
+- Fixed SubmodelClientServerTests
+- Fixed SubmodelRepoClientServerTests
 
 ## Server Application
 - Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
