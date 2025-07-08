@@ -8,7 +8,7 @@ on:
 jobs:
   test-admin-shell-client-server:
     runs-on: ubuntu-latest
-    name: Test AdminShellClientServerTests
+    name: Test Admin Shell Client Server
 
     steps:
       - name: Checkout code
@@ -28,7 +28,7 @@ jobs:
   
   test-admin-shell-repo-client-server:
     runs-on: ubuntu-latest
-    name: Test AdminShellRepoClientServerTests
+    name: Test Admin Shell Repo Client Server
 
     steps:
       - name: Checkout code
@@ -48,7 +48,7 @@ jobs:
 
   test-registry-client-server:
     runs-on: ubuntu-latest
-    name: Test RegistryClientServerTests
+    name: Test Registry Client Server
 
     steps:
       - name: Checkout code
@@ -66,11 +66,31 @@ jobs:
         run: |
           dotnet test basyx-dotnet-tests/RegistryClientServerTests/RegistryClientServerTests.csproj --verbosity normal          
 
+  test-submodel-client-server:
+    runs-on: ubuntu-latest
+    name: Test Submodel Client Server
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run tests
+        run: |
+          dotnet test basyx-dotnet-tests/SubmodelClientServerTests/SubmodelClientServerTests.csproj --verbosity normal 
+
   build-image:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Build docker image
-    needs: [test-admin-shell-client-server, test-admin-shell-repo-client-server, test-registry-client-server]
+    needs: [test-admin-shell-client-server, test-admin-shell-repo-client-server, test-registry-client-server, test-submodel-client-server]
 
     steps:
       - name: Checkout code

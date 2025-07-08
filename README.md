@@ -42,3 +42,6 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
 - Add Nunit tests to GitHub workflow
+
+# Open points
+- Missing (currently not possible) serialization/deserialization of the `OnMethodCalled` property in the `Operation` class. Therefore, this property cannot be set via Rest API endpoints or is destroyed when using Rest API endpoints (e.g. update endpoints) if it has already been set.

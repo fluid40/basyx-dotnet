@@ -45,6 +45,48 @@ namespace SubmodelClientServerTests
         }
 
         #region test cases
+        // Set invoke tests before update methods to ensure that the operation is available
+        // "OnMethodCalled" property of operations are destroyed by Rest API endpoints (see "Open points" in README.md)
+        [TestMethod]
+        public void Test001_InvokeOperation()
+        {
+            InvocationRequest request = new InvocationRequest(Guid.NewGuid().ToString())
+            {
+                InputArguments =
+                {
+                    new Property<string>("Expression", "3*8"),
+                    new Property<int>("ComputingTime", 100)
+                }
+            };
+
+            var result = InvokeOperation("Calculate", request, false);
+            result.Success.Should().BeTrue();
+            result.Entity.OutputArguments["Result"].GetValue<double>().Should().Be(24);
+
+        }
+
+        [TestMethod]
+        public void Test002_InvokeOperationAsync()
+        {
+            InvocationRequest request = new InvocationRequest(Guid.NewGuid().ToString())
+            {
+                InputArguments =
+                {
+                    new Property<string>("Expression", "3*8"),
+                    new Property<int>("ComputingTime", 2000)
+                }
+            };
+
+            var result = InvokeOperation("Calculate", request, true);
+            result.Success.Should().BeTrue();
+            result.Entity.ExecutionState.Should().Be(ExecutionState.Initiated);
+
+            Thread.Sleep(2500);
+
+            var handleResult = GetInvocationResult("Calculate", request.RequestId);
+            handleResult.Success.Should().BeTrue();
+            handleResult.Entity.OutputArguments["Result"].GetValue<double>().Should().Be(24);
+        }
 
         [TestMethod]
         public void Test100a_UpdateSubmodel()
@@ -349,46 +391,7 @@ namespace SubmodelClientServerTests
             result.Entity.GetValue<double>().Should().Be(1.8d);
         }
 
-        [TestMethod]
-        public void Test110_InvokeOperation()
-        {
-            InvocationRequest request = new InvocationRequest(Guid.NewGuid().ToString())
-            {
-                InputArguments =
-                {
-                    new Property<string>("Expression", "3*8"),
-                    new Property<int>("ComputingTime", 100)
-                }
-            };
 
-            var result = InvokeOperation("Calculate", request, false);
-            result.Success.Should().BeTrue();
-            result.Entity.OutputArguments["Result"].GetValue<double>().Should().Be(24);
-
-        }
-
-        [TestMethod]
-        public void Test111_InvokeOperationAsync()
-        {
-            InvocationRequest request = new InvocationRequest(Guid.NewGuid().ToString())
-            {
-                InputArguments =
-                {
-                    new Property<string>("Expression", "3*8"),
-                    new Property<int>("ComputingTime", 2000)
-                }
-            };
-
-            var result = InvokeOperation("Calculate", request, true);
-            result.Success.Should().BeTrue();
-            result.Entity.ExecutionState.Should().Be(ExecutionState.Initiated);
-
-            Thread.Sleep(2500);
-
-            var handleResult = GetInvocationResult("Calculate", request.RequestId);
-            handleResult.Success.Should().BeTrue();
-            handleResult.Entity.OutputArguments["Result"].GetValue<double>().Should().Be(24);
-        }
 
         [TestMethod]
         public void Test112_DeleteSubmodelElement()
@@ -544,7 +547,7 @@ namespace SubmodelClientServerTests
         {
             var retrieved = RetrieveSubmodelElementsPath(2, "TestValueChanged1");
             retrieved.Success.Should().BeTrue();
-            string jsonResult = JsonSerializer.Serialize(retrieved.Entity);
+            string jsonResult = JsonSerializer.Serialize(retrieved.Entity.Result);
             string expectedResult =
                 "[" +
                 "\"TestValueChanged1\"," +
@@ -574,20 +577,11 @@ namespace SubmodelClientServerTests
         }
 
         [TestMethod]
-        public void Test107C_RetrieveDynamicSubmodelElement()
-        {
-            var result = RetrieveSubmodelElement("MyDynamicSMC.DynamicSubSMC1.DynamicTestProp");
-            result.Entity.Cast<IProperty>().GetValue<string>().Should().BeEquivalentTo("DynamicTestVal1");
-        }
-
-        [TestMethod]
-        [Ignore]
         public void Test107D_RetrieveNonExistingSubmodelElement()
         {
             var result = RetrieveSubmodelElement("MyDynamicSMC.DynamicSubSMC3.DynamicTestProp");
             result.Success.Should().BeFalse();
         }
-        
 
         [TestMethod]
         public void Test103A_CreateDynamicSubmodelElement()
@@ -606,7 +600,16 @@ namespace SubmodelClientServerTests
             var created = CreateSubmodelElement(".", dynamicSmc);
             created.Success.Should().BeTrue();
         }
-        
+
+        [TestMethod]
+        public void Test107C_RetrieveDynamicSubmodelElement()
+        {
+            var result = RetrieveSubmodelElement("MyDynamicSMC.DynamicSubSMC1.DynamicTestProp");
+            result.Entity.Cast<IProperty>().GetValue<string>().Should().BeEquivalentTo("DynamicTestVal1");
+        }
+
+
+
         [TestMethod]
         public void Test114_RetrieveSMEPathSerializationLevelDeepNestedSubmodelElementHierarchy()
         {
@@ -1261,7 +1264,7 @@ namespace SubmodelClientServerTests
             return ((ISubmodelClient)Client).RetrieveSubmodelElementPath(idShortPath, level);
         }
 
-        public IResult<List<string>> RetrieveSubmodelElementsPath(int limit = 100,
+        public IResult<PagedResult<List<string>>> RetrieveSubmodelElementsPath(int limit = 100,
             string cursor = "", RequestLevel level = RequestLevel.Deep)
         {
             return ((ISubmodelClient)Client).RetrieveSubmodelElementsPath(limit, cursor, level);
@@ -1302,7 +1305,7 @@ namespace SubmodelClientServerTests
             return ((ISubmodelClient)Client).RetrieveSubmodelElementsAsync(limit, cursor, level, extent);
         }
 
-        public Task<IResult<List<string>>> RetrieveSubmodelElementsPathAsync(int limit = 100, string cursor = "", RequestLevel level = RequestLevel.Deep)
+        public Task<IResult<PagedResult<List<string>>>> RetrieveSubmodelElementsPathAsync(int limit = 100, string cursor = "", RequestLevel level = RequestLevel.Deep)
         {
             return ((ISubmodelClient)Client).RetrieveSubmodelElementsPathAsync(limit, cursor, level);
         }
