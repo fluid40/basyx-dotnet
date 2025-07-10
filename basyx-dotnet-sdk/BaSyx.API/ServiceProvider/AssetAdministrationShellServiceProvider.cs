@@ -181,7 +181,8 @@ namespace BaSyx.API.ServiceProvider
                 ConceptDescription = aas.ConceptDescription ?? _assetAdministrationShell.ConceptDescription,
                 DerivedFrom = aas.DerivedFrom ?? _assetAdministrationShell.DerivedFrom,
                 Submodels = aas.Submodels ?? _assetAdministrationShell.Submodels,
-                SubmodelReferences = aas.SubmodelReferences ?? _assetAdministrationShell.SubmodelReferences,
+                // default init as empty list
+                SubmodelReferences = aas.SubmodelReferences.ToList().Any() ? aas.SubmodelReferences : _assetAdministrationShell.SubmodelReferences
             };
 
 
