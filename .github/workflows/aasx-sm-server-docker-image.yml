@@ -66,6 +66,26 @@ jobs:
         run: |
           dotnet test basyx-dotnet-tests/RegistryClientServerTests/RegistryClientServerTests.csproj --verbosity normal          
 
+  test-repo-client-server:
+    runs-on: ubuntu-latest
+    name: Test Repository Client Server
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run tests
+        run: |
+          dotnet test basyx-dotnet-tests/RepoClientServerTests/RepoClientServerTests.csproj --verbosity normal 
+
   test-submodel-client-server:
     runs-on: ubuntu-latest
     name: Test Submodel Client Server
