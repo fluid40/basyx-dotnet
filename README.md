@@ -46,5 +46,6 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
 - Add Nunit tests to GitHub workflow
 
-# Open points
+# Known Issues
 - Missing (currently not possible) serialization/deserialization of the `OnMethodCalled` property in the `Operation` class. Therefore, this property cannot be set via Rest API endpoints or is destroyed when using Rest API endpoints (e.g. update endpoints) if it has already been set.
+- To add a submodel reference to an AAS object in the data model, a complete submodel object must be added to the 'submodels' property of the ASS

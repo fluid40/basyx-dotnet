@@ -681,6 +681,11 @@ namespace AdminShellRepoClientServerTests
             return ((IAssetAdministrationShellRepositoryInterface)RepoClient).DeleteAssetAdministrationShell(id);
         }
 
+        public Task<IResult<PagedResult<IEnumerable<IReference<IAssetAdministrationShell>>>>> RetrieveAssetAdministrationShellsReferenceAsync(int limit = 100, string cursor = "")
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaSyx.AASX.SM.Server.Http.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaSyx.Repo.Server.Http.App", "basyx-dotnet-applications\BaSyx.Repo.Server.Http.App\BaSyx.Repo.Server.Http.App.csproj", "{D9FE10F7-65D4-566C-BF54-866D000213C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepoClientServerTests", "basyx-dotnet-tests\RepoClientServerTests\RepoClientServerTests.csproj", "{F1568DF7-72F7-6D25-912E-038579082A4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -272,6 +274,10 @@ Global
 		{D9FE10F7-65D4-566C-BF54-866D000213C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9FE10F7-65D4-566C-BF54-866D000213C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9FE10F7-65D4-566C-BF54-866D000213C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1568DF7-72F7-6D25-912E-038579082A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1568DF7-72F7-6D25-912E-038579082A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1568DF7-72F7-6D25-912E-038579082A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1568DF7-72F7-6D25-912E-038579082A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -318,6 +324,7 @@ Global
 		{A4E27382-7DF2-489F-AE0C-B494D65A1B03} = {ABAA386C-F692-4397-968F-12C674FF0825}
 		{96DA5166-0834-2996-11C3-45E33F7AAF12} = {72EFDB7E-5698-40E0-8E43-D4DB75F679B9}
 		{D9FE10F7-65D4-566C-BF54-866D000213C0} = {72EFDB7E-5698-40E0-8E43-D4DB75F679B9}
+		{F1568DF7-72F7-6D25-912E-038579082A4C} = {4FBBD33F-2754-494E-BDDA-4D200EFAE28F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B028A9A2-E37C-44AF-8032-C8F0492BDB00}
