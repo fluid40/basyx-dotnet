@@ -9,39 +9,32 @@
  * SPDX-License-Identifier: MIT
  *******************************************************************************/
 using BaSyx.API.Clients;
-using BaSyx.API.Http;
 using BaSyx.API.Interfaces;
 using BaSyx.Models.AdminShell;
 using BaSyx.Models.Extensions;
 using BaSyx.Utils.ResultHandling;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleAssetAdministrationShell;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using BaSyx.Utils.Extensions;
 using BaSyx.Clients.AdminShell.Http;
 using BaSyx.Models.Connectivity;
 using BaSyx.Utils.ResultHandling.ResultTypes;
-using Newtonsoft.Json.Linq;
 
 namespace RepoClientServerTests
 {
     [TestClass]
     public class MainTest : ISubmodelRepositoryClient
     {
-        private static Submodel Submodel;
-        private static Submodel TestingSubmodel;
-        private static AssetAdministrationShell AdminShell;
+        private static readonly Submodel Submodel;
+        private static readonly AssetAdministrationShell AdminShell;
 
-        private static AssetAdministrationShellRepositoryHttpClient aasRepoClient;
-        private static SubmodelRepositoryHttpClient submodelRepoClient;
+        private static readonly AssetAdministrationShellRepositoryHttpClient AasRepoClient;
+        private static readonly SubmodelRepositoryHttpClient SubmodelRepoClient;
 
-        public IEndpoint Endpoint => ((IClient)submodelRepoClient).Endpoint;
+        public IEndpoint Endpoint => ((IClient)SubmodelRepoClient).Endpoint;
 
         static MainTest()
         {
@@ -51,8 +44,8 @@ namespace RepoClientServerTests
             Submodel = TestSubmodel.GetSubmodel("MainSubmodel");
             AdminShell.Submodels.Add(Submodel);
 
-            aasRepoClient = new AssetAdministrationShellRepositoryHttpClient(new Uri(Server.ServerUrl));
-            submodelRepoClient = new SubmodelRepositoryHttpClient(new Uri(Server.ServerUrl));
+            AasRepoClient = new AssetAdministrationShellRepositoryHttpClient(new Uri(Server.ServerUrl));
+            SubmodelRepoClient = new SubmodelRepositoryHttpClient(new Uri(Server.ServerUrl));
         }
 
 
@@ -165,27 +158,27 @@ namespace RepoClientServerTests
 
         public IResult<IAssetAdministrationShell> PostShells(IAssetAdministrationShell aas)
         {
-            return ((IAssetAdministrationShellRepositoryClient)aasRepoClient).CreateAssetAdministrationShellAsync(aas).GetAwaiter().GetResult();
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).CreateAssetAdministrationShellAsync(aas).GetAwaiter().GetResult();
         }
 
         public IResult<PagedResult<IElementContainer<IAssetAdministrationShell>>> GetShells()
         {
-            return ((IAssetAdministrationShellRepositoryClient)aasRepoClient).RetrieveAssetAdministrationShellsAsync().GetAwaiter().GetResult();
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellsAsync().GetAwaiter().GetResult();
         }
 
         public IResult<PagedResult<IEnumerable<IReference<IAssetAdministrationShell>>>> GetShellsReference()
         {
-            return ((IAssetAdministrationShellRepositoryClient)aasRepoClient).RetrieveAssetAdministrationShellsReferenceAsync().GetAwaiter().GetResult();
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellsReferenceAsync().GetAwaiter().GetResult();
         }
 
         public IResult<IAssetAdministrationShell> GetShellsById(string id)
         {
-            return ((IAssetAdministrationShellRepositoryClient)aasRepoClient).RetrieveAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
         }
 
         public IResult PutShellsById(string id, IAssetAdministrationShell aas)
         {
-            return ((IAssetAdministrationShellRepositoryClient)aasRepoClient).UpdateAssetAdministrationShellAsync(id, aas).GetAwaiter().GetResult();
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).UpdateAssetAdministrationShellAsync(id, aas).GetAwaiter().GetResult();
         }
 
         #endregion
@@ -194,52 +187,52 @@ namespace RepoClientServerTests
 
         public Task<IResult<ISubmodel>> CreateSubmodelAsync(ISubmodel submodel)
         {
-            return ((ISubmodelRepositoryClient)submodelRepoClient).CreateSubmodelAsync(submodel);
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).CreateSubmodelAsync(submodel);
         }
 
         public Task<IResult<ISubmodel>> RetrieveSubmodelAsync(Identifier id)
         {
-            return ((ISubmodelRepositoryClient)submodelRepoClient).RetrieveSubmodelAsync(id);
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).RetrieveSubmodelAsync(id);
         }
 
         public Task<IResult<PagedResult<IElementContainer<ISubmodel>>>> RetrieveSubmodelsAsync(int limit = 100, string cursor = "", string semanticId = "", string idShort = "")
         {
-            return ((ISubmodelRepositoryClient)submodelRepoClient).RetrieveSubmodelsAsync(limit, cursor, semanticId, idShort);
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).RetrieveSubmodelsAsync(limit, cursor, semanticId, idShort);
         }
 
         public Task<IResult> UpdateSubmodelAsync(Identifier id, ISubmodel submodel)
         {
-            return ((ISubmodelRepositoryClient)submodelRepoClient).UpdateSubmodelAsync(id, submodel);
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).UpdateSubmodelAsync(id, submodel);
         }
 
         public Task<IResult> DeleteSubmodelAsync(Identifier id)
         {
-            return ((ISubmodelRepositoryClient)submodelRepoClient).DeleteSubmodelAsync(id);
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).DeleteSubmodelAsync(id);
         }
 
         public IResult<ISubmodel> CreateSubmodel(ISubmodel submodel)
         {
-            return ((ISubmodelRepositoryInterface)submodelRepoClient).CreateSubmodel(submodel);
+            return ((ISubmodelRepositoryInterface)SubmodelRepoClient).CreateSubmodel(submodel);
         }
 
         public IResult<ISubmodel> RetrieveSubmodel(Identifier id)
         {
-            return ((ISubmodelRepositoryInterface)submodelRepoClient).RetrieveSubmodel(id);
+            return ((ISubmodelRepositoryInterface)SubmodelRepoClient).RetrieveSubmodel(id);
         }
 
         public IResult<PagedResult<IElementContainer<ISubmodel>>> RetrieveSubmodels(int limit = 100, string cursor = "", string semanticId = "", string idShort = "")
         {
-            return ((ISubmodelRepositoryInterface)submodelRepoClient).RetrieveSubmodels(limit, cursor, semanticId, idShort);
+            return ((ISubmodelRepositoryInterface)SubmodelRepoClient).RetrieveSubmodels(limit, cursor, semanticId, idShort);
         }
 
         public IResult UpdateSubmodel(Identifier id, ISubmodel submodel)
         {
-            return ((ISubmodelRepositoryInterface)submodelRepoClient).UpdateSubmodel(id, submodel);
+            return ((ISubmodelRepositoryInterface)SubmodelRepoClient).UpdateSubmodel(id, submodel);
         }
 
         public IResult DeleteSubmodel(Identifier id)
         {
-            return ((ISubmodelRepositoryInterface)submodelRepoClient).DeleteSubmodel(id);
+            return ((ISubmodelRepositoryInterface)SubmodelRepoClient).DeleteSubmodel(id);
         }
 
         #endregion
