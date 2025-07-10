@@ -172,9 +172,8 @@ namespace BaSyx.API.ServiceProvider
                 return new Result(false, new ErrorMessage("The service provider's inner Asset Administration Shell object is null"));
 
             string idShort = aas.IdShort ?? _assetAdministrationShell.IdShort;
-            Identifier identifier = aas.Id ?? _assetAdministrationShell.Id;
 
-            AssetAdministrationShell tempShell = new AssetAdministrationShell(idShort, identifier)
+            AssetAdministrationShell tempShell = new AssetAdministrationShell(idShort, _assetAdministrationShell.Id)
             {
                 Administration = aas.Administration ?? _assetAdministrationShell.Administration,
                 AssetInformation = aas.AssetInformation ?? _assetAdministrationShell.AssetInformation,
