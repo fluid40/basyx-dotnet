@@ -29,6 +29,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Fixed a bug where the `SubmodelElements -> Parent` property pointed to the wrong object after the Submodel was updated (SubmodelServiceProvider)
 - Rework Submodel reference handling in ASS. The References are no the primary source and will be updated if submodel objects added / removed from AAS (ElementContainer)
 - Submodel update behavior corrected so that the `IdShort` property can be changed by the input parameter (SubmodelServiceProvider)
+- Change http method from delete to get for endpoint `/shells/{aasIdentifier}/$reference` (AssetAdministrationShellRepositoryController)
 
 ## Testing
 - Fixed AdminShellClientServerTests
