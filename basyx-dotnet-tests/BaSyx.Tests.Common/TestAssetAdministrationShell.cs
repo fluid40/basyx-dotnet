@@ -16,7 +16,7 @@ namespace SimpleAssetAdministrationShell
     {
         public static AssetAdministrationShell GetAssetAdministrationShell(string id)
         {
-            AssetAdministrationShell aas = new AssetAdministrationShell(id, new BaSyxShellIdentifier(id, "1.0.0"))
+            var aas = new AssetAdministrationShell(id, new BaSyxShellIdentifier(id, "1.0.0"))
             {
                 Description = new LangStringSet()
                 {

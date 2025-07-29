@@ -56,8 +56,7 @@ namespace BaSyx.AASX.SM.Server.Http.App
 
             httpServer.SetServiceProvider(aasRepositoryService, smRepositoryService);
 
-            httpServer.AddBaSyxUI(PageNames.AssetAdministrationShellRepositoryServer);
-            httpServer.AddSwagger(Interface.All);
+            httpServer.AddBaSyxUI(PageNames.AssetAdministrationShellRepositoryServer);  
 
             httpServer.Run();
         }
