@@ -57,6 +57,7 @@ namespace RepoClientServerTests
             var result = PostShells(AdminShell);
 
             result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
             result.Entity.SubmodelReferences.Count.Should().Be(1);
             result.Entity.Submodels.Count.Should().Be(0);
             result.Entity.Should().BeEquivalentTo(AdminShell, options =>
@@ -73,6 +74,7 @@ namespace RepoClientServerTests
             var result = GetShells();
 
             result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
             result.Entity.Result.Count.Should().Be(1);
             var aas = result.Entity.Result[0];
             aas.SubmodelReferences.Count.Should().Be(1);
@@ -91,6 +93,7 @@ namespace RepoClientServerTests
             var result = GetShellsReference();
 
             result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
             var referenceList = result.Entity.Result as IList<IReference<IAssetAdministrationShell>>;
             referenceList.Count.Should().Be(1);
 
@@ -104,6 +107,7 @@ namespace RepoClientServerTests
             var result = GetShellsById(AdminShell.Id);
 
             result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
             var aas = result.Entity;
             aas.SubmodelReferences.Count.Should().Be(1);
             aas.Submodels.Count.Should().Be(0);
@@ -142,6 +146,7 @@ namespace RepoClientServerTests
 
             var trueResult = GetShellsById(AdminShell.Id);
             trueResult.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
             var aas = trueResult.Entity;
             aas.SubmodelReferences.Count.Should().Be(1);
             aas.Submodels.Count.Should().Be(0);
@@ -167,9 +172,17 @@ namespace RepoClientServerTests
         }
 
         [TestMethod]
-        public void Test007_DeleteShellsReferenceById()
+        public void Test007_GetShellsReferenceById()
         {
+            var result = GetShellsReferenceById(AdminShell.Id);
 
+            result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
+            result.Entity.First.Value.Should().BeEquivalentTo(AdminShell.Id);
+
+            var falseResult = GetShellsReferenceById("NonExistingId");
+            falseResult.Success.Should().BeFalse();
+            falseResult.Entity.Should().BeNull();
         }
 
         #endregion
@@ -189,6 +202,11 @@ namespace RepoClientServerTests
         public IResult<PagedResult<IEnumerable<IReference<IAssetAdministrationShell>>>> GetShellsReference()
         {
             return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellsReferenceAsync().GetAwaiter().GetResult();
+        }
+
+        public IResult<IReference<IAssetAdministrationShell>> GetShellsReferenceById(string id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellReferenceAsync(id).GetAwaiter().GetResult();
         }
 
         public IResult<IAssetAdministrationShell> GetShellsById(string id)

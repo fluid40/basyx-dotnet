@@ -683,7 +683,12 @@ namespace AdminShellRepoClientServerTests
 
         public Task<IResult<PagedResult<IEnumerable<IReference<IAssetAdministrationShell>>>>> RetrieveAssetAdministrationShellsReferenceAsync(int limit = 100, string cursor = "")
         {
-            throw new NotImplementedException();
+            return ((IAssetAdministrationShellRepositoryClient)RepoClient).RetrieveAssetAdministrationShellsReferenceAsync(limit, cursor);
+        }
+
+        public Task<IResult<IReference<IAssetAdministrationShell>>> RetrieveAssetAdministrationShellReferenceAsync(Identifier id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)RepoClient).RetrieveAssetAdministrationShellReferenceAsync(id);
         }
 
         #endregion

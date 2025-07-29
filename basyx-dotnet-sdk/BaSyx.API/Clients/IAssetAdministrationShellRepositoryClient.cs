@@ -32,5 +32,7 @@ namespace BaSyx.API.Clients
 
         Task<IResult<PagedResult<IEnumerable<IReference<IAssetAdministrationShell>>>>>
             RetrieveAssetAdministrationShellsReferenceAsync(int limit = 100, string cursor = "");
+
+        Task<IResult<IReference<IAssetAdministrationShell>>> RetrieveAssetAdministrationShellReferenceAsync(Identifier id);
     }
 }
