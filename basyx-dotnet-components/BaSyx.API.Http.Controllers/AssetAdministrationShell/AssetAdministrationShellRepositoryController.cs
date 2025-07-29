@@ -208,7 +208,7 @@ namespace BaSyx.API.Http.Controllers
         /// <returns></returns>
         /// <response code="200">Requested Asset Administration Shel</response>
         /// <inheritdoc cref="AssetAdministrationShellController.GetAssetAdministrationShellReference"/>
-        [HttpDelete(AssetAdministrationShellRepositoryRoutes.SHELLS_AAS + OutputModifier.REFERENCE, Name = "ShellRepo_GetAssetAdministrationShellsReference")]
+        [HttpGet(AssetAdministrationShellRepositoryRoutes.SHELLS_AAS + OutputModifier.REFERENCE, Name = "ShellRepo_GetAssetAdministrationShellsReference")]
         [ProducesResponseType(typeof(Reference), 200)]
         [ProducesResponseType(typeof(Result), 400)]
         [ProducesResponseType(typeof(Result), 403)]
