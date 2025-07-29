@@ -13,6 +13,7 @@ using BaSyx.API.ServiceProvider;
 using BaSyx.Components.Common;
 using BaSyx.Models.Connectivity;
 using BaSyx.Utils.Settings;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -42,12 +43,32 @@ namespace BaSyx.Servers.AdminShell.Http
                 services.AddSingleton<ISubmodelRepositoryServiceProvider>(smRepoServiceProvider);
                 services.AddSingleton<IServiceProvider>(assRepositoryServiceProvider);
                 services.AddSingleton<IServiceProvider>(smRepoServiceProvider);
-                services.AddSingleton<IServiceDescriptor>(assRepositoryServiceProvider.ServiceDescriptor);
                 services.AddMvc((options) =>
                 {
                     options.Conventions.Add(new ControllerConvention(this)
-                        .Include(typeof(RepositoryController))
-                        .Include(typeof(DescriptionController)));
+                        .Include(typeof(RepositoryController)));
+                });
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                    {
+                        Title = "BaSyx Repository HTTP Server",
+                        Version = "v1",
+                        Description = "A BaSyx HTTP server for Asset Administration Shell and Submodel repositories."
+                    });
+                });
+            });
+            this.Configure(app =>
+            {
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BaSyx Repository HTTP Server V1");
                 });
             });
         }       
