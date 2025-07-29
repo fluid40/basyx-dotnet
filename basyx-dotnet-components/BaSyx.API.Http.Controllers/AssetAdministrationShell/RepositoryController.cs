@@ -114,21 +114,6 @@ namespace BaSyx.API.Http.Controllers
         }
 
         /// <summary>
-        /// Returns a specific Asset Administration Shell Descriptor
-        /// </summary>
-        /// <param name="aasIdentifier">The Asset Administration Shell’s unique id (BASE64-URL-encoded)</param>
-        /// <returns></returns>
-        /// <response code="200">Returns the requested Asset Administration Shell Descriptor</response>
-        /// <response code="404">No Asset Administration Shell Descriptor found</response>           
-        [HttpGet(AssetAdministrationShellRepositoryRoutes.SHELLS_AAS + DescriptionRoutes.DESCRIPTOR, Name = "GetAssetAdministrationShellDescriptorFromRepoById")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(AssetAdministrationShellDescriptor), 200)]
-        public IActionResult GetAssetAdministrationShellDescriptorFromRepoById(string aasIdentifier)
-        {
-            return _aasController.GetAssetAdministrationShellDescriptorFromRepoById(aasIdentifier);
-        }
-
-        /// <summary>
         /// Updates an existing Asset Administration Shell
         /// </summary>
         /// <param name="aasIdentifier">The Asset Administration Shell’s unique id (BASE64-URL-encoded)</param>

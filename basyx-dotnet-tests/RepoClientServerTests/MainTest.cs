@@ -152,6 +152,26 @@ namespace RepoClientServerTests
             aas.Administration.Should().BeEquivalentTo(AdminShell.Administration);
         }
 
+        [TestMethod]
+        public void Test006_DeleteShellsById()
+        {
+            var result = DeleteShellsById(AdminShell.Id);
+
+            result.Success.Should().BeTrue();
+            
+            var getResult = GetShellsById(AdminShell.Id);
+            getResult.Success.Should().BeFalse();
+
+            if (!getResult.Success)
+                Test001_PostShells(); // Recreate the shell for further tests
+        }
+
+        [TestMethod]
+        public void Test007_DeleteShellsReferenceById()
+        {
+
+        }
+
         #endregion
 
         #region AAS Repository Client
@@ -179,6 +199,16 @@ namespace RepoClientServerTests
         public IResult PutShellsById(string id, IAssetAdministrationShell aas)
         {
             return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).UpdateAssetAdministrationShellAsync(id, aas).GetAwaiter().GetResult();
+        }
+
+        public IResult DeleteShellsById(string id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).DeleteAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
+        }
+
+         public IResult DeleteShellsReferenceById(string id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).DeleteAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
         }
 
         #endregion
