@@ -431,5 +431,25 @@ namespace BaSyx.Clients.AdminShell.Http
         }
 
         #endregion
+
+        #region Descriptor Interface
+
+        public IResult<ISubmodelDescriptor> RetrieveSubmodelDescriptor()
+        {
+            return RetrieveSubmodelDescriptorAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<IResult<ISubmodelDescriptor>> RetrieveSubmodelDescriptorAsync()
+        {
+            string path = Endpoint.ProtocolInformation.EndpointAddress.Trim('/') + DescriptionRoutes.DESCRIPTOR;
+            Uri uri = new Uri(path);
+            var request = await CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
+            var response = await SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await EvaluateResponseAsync<ISubmodelDescriptor>(response, response.Entity).ConfigureAwait(false);
+            response?.Entity?.Dispose();
+            return result;
+        }
+
+        #endregion
     }
 }

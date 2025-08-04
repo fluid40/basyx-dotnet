@@ -60,12 +60,21 @@ namespace BaSyx.Common.UI.Swagger
             License = new OpenApiLicense { Name = "EPL-2.0", Url = new Uri("https://www.eclipse.org/legal/epl-2.0/") }
         };
 
-        internal static readonly OpenApiInfo Registry_OpenApiInfo = new OpenApiInfo
+        internal static readonly OpenApiInfo AssetAdministrationShell_Registry_OpenApiInfo = new OpenApiInfo
         {
             Version = "v1",
-            Title = "BaSyx Registry HTTP REST-API",
-            Description = "The full description of the BaSyx Registry HTTP REST-API",
+            Title = "BaSyx Asset Administration Shell Registry HTTP REST-API",
+            Description = "The full description of the BaSyx Asset Administration Shell Registry HTTP REST-API",
             Contact = new OpenApiContact { Name = "Constantin Ziesche", Email = "constantin.ziesche@bosch.com", Url = new Uri("https://www.bosch.com/de/") },
+            License = new OpenApiLicense { Name = "EPL-2.0", Url = new Uri("https://www.eclipse.org/legal/epl-2.0/") }
+        };
+
+        internal static readonly OpenApiInfo Submodel_Registry_OpenApiInfo = new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "BaSyx Submodel Registry HTTP REST-API",
+            Description = "The full description of the BaSyx Submodel Registry HTTP REST-API",
+            Contact = new OpenApiContact { Name = "Daniel Klein", Email = "daniel.klein@em.ag", Url = new Uri("https://www.em.ag") },
             License = new OpenApiLicense { Name = "EPL-2.0", Url = new Uri("https://www.eclipse.org/legal/epl-2.0/") }
         };
 
@@ -82,7 +91,9 @@ namespace BaSyx.Common.UI.Swagger
                 case Interface.SubmodelRepository:
                     return SubmodelRepository_OpenApiInfo;
                 case Interface.AssetAdministrationShellRegistry:
-                    return Registry_OpenApiInfo;
+                    return AssetAdministrationShell_Registry_OpenApiInfo;
+                case Interface.SubmodelRegistry:
+                    return Submodel_Registry_OpenApiInfo;
                 case Interface.All:
                     return AssetAdministrationShell_OpenApiInfo;
                 default:
@@ -100,7 +111,8 @@ namespace BaSyx.Common.UI.Swagger
         AssetAdministrationShellRepository,
         AssetAdministrationShellRegistry,
         Submodel,
-        SubmodelRepository,        
+        SubmodelRepository,
+        SubmodelRegistry,
     }
     public static class SwaggerExtensions
     {

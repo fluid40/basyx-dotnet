@@ -8,9 +8,10 @@
 *
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
-using BaSyx.Models.Connectivity;
 using BaSyx.Models.AdminShell;
+using BaSyx.Models.Connectivity;
 using BaSyx.Utils.ResultHandling;
+using BaSyx.Utils.ResultHandling.ResultTypes;
 using System;
 using System.Collections.Generic;
 
@@ -41,14 +42,14 @@ namespace BaSyx.API.Interfaces
         /// </summary>
         /// <param name="predicate">The predicate to explicitly look for specific Asset Administration Shell Descriptors</param>
         /// <returns>Result object with embedded list of Asset Administration Shell Descriptors</returns>
-        IResult<IEnumerable<ISubmodelDescriptor>> RetrieveAllSubmodelRegistrations();
+        IResult<PagedResult<IEnumerable<ISubmodelDescriptor>>> RetrieveAllSubmodelRegistrations();
 
         /// <summary>
         /// Retrieves all Submodel registrations with a certain search predicate
         /// </summary>
         /// <param name="predicate">The predicate to explicitly look for specific Asset Administration Shell Descriptors</param>
         /// <returns>Result object with embedded list of Asset Administration Shell Descriptors</returns>
-        IResult<IEnumerable<ISubmodelDescriptor>> RetrieveAllSubmodelRegistrations(Predicate<ISubmodelDescriptor> predicate);
+        IResult<PagedResult<IEnumerable<ISubmodelDescriptor>>> RetrieveAllSubmodelRegistrations(Predicate<ISubmodelDescriptor> predicate);
 
         /// <summary>
         /// Retrieves the Submodel registration
