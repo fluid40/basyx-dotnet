@@ -218,6 +218,16 @@ namespace BaSyx.Clients.AdminShell.Http
             return result;
         }
 
+        public async Task<IResult<IAssetInformation>> RetrieveAssetAdministrationShellAssetInformation(Identifier id)
+        {
+            Uri uri = GetPath(AssetAdministrationShellRepositoryRoutes.SHELLS_AAS + AssetAdministrationShellRoutes.AAS_ASSET_INFORMATION, id);
+            var request = await base.CreateRequest(uri, HttpMethod.Get).ConfigureAwait(false);
+            var response = await base.SendRequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            var result = await base.EvaluateResponseAsync<IAssetInformation>(response, response.Entity).ConfigureAwait(false);
+            response?.Entity?.Dispose();
+            return result;
+        }
+
         #endregion
     }
 }

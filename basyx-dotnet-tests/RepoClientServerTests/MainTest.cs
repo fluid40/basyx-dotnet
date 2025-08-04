@@ -185,6 +185,21 @@ namespace RepoClientServerTests
             falseResult.Entity.Should().BeNull();
         }
 
+        [TestMethod]
+        public void Test008_GetShellsAssetInformationById()
+        {
+            var result = GetShellsAssetInformationById(AdminShell.Id);
+
+            result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
+
+            result.Entity.Should().BeEquivalentTo(AdminShell.AssetInformation);
+
+            var falseResult = GetShellsReferenceById("NonExistingId");
+            falseResult.Success.Should().BeFalse();
+            falseResult.Entity.Should().BeNull();
+        }
+
         #endregion
 
         #region AAS Repository Client
@@ -224,9 +239,14 @@ namespace RepoClientServerTests
             return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).DeleteAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
         }
 
-         public IResult DeleteShellsReferenceById(string id)
+        public IResult DeleteShellsReferenceById(string id)
         {
             return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).DeleteAssetAdministrationShellAsync(id).GetAwaiter().GetResult();
+        }
+
+        public IResult GetShellsAssetInformationById(string id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)AasRepoClient).RetrieveAssetAdministrationShellAssetInformation(id).GetAwaiter().GetResult();
         }
 
         #endregion

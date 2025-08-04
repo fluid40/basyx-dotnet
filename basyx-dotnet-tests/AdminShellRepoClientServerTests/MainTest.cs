@@ -691,6 +691,11 @@ namespace AdminShellRepoClientServerTests
             return ((IAssetAdministrationShellRepositoryClient)RepoClient).RetrieveAssetAdministrationShellReferenceAsync(id);
         }
 
+        public Task<IResult<IAssetInformation>> RetrieveAssetAdministrationShellAssetInformation(Identifier id)
+        {
+            return ((IAssetAdministrationShellRepositoryClient)RepoClient).RetrieveAssetAdministrationShellAssetInformation(id);
+        }
+
         #endregion
     }
 }

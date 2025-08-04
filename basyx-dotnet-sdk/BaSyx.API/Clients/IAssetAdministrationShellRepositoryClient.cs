@@ -34,5 +34,7 @@ namespace BaSyx.API.Clients
             RetrieveAssetAdministrationShellsReferenceAsync(int limit = 100, string cursor = "");
 
         Task<IResult<IReference<IAssetAdministrationShell>>> RetrieveAssetAdministrationShellReferenceAsync(Identifier id);
+
+        Task<IResult<IAssetInformation>> RetrieveAssetAdministrationShellAssetInformation(Identifier id);
     }
 }
