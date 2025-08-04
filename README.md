@@ -31,6 +31,9 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Submodel update behavior corrected so that the `IdShort` property can be changed by the input parameter (SubmodelServiceProvider)
 - Change http method from delete to get for endpoint `/shells/{aasIdentifier}/$reference` (AssetAdministrationShellRepositoryController)
 
+## Features
+- Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)
+
 ## Testing
 - Fixed AdminShellClientServerTests
 - Fixed AdminShellRepoClientServerTests
@@ -38,8 +41,9 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Fixed SubmodelRepoClientServerTests
 
 ## Server Applications
-- Build new server with AAS Repository server and Submodel Repository server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
+- Build new server with AAS Repository server, AAS Registry sever, Submodel Repository server and Submodel Registry server linked by reverse proxy (BaSyx.AASX.SM.Server.Http.App)
 - Build new server variation as combination of AAS Repository and Submodel Repository as single server (BaSyx.Repo.Server.Http.App)
+
 
 ## Infrastructure
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
