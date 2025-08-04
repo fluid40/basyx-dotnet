@@ -56,7 +56,8 @@ namespace BaSyx.AASX.SM.Server.Http.App
             var reverseProxyUrl = GetUrl(args);
             var submodelRepoPort = reverseProxyUrl.Port + 1;
             var aasRepoPort = reverseProxyUrl.Port + 2;
-            var registryPort = reverseProxyUrl.Port + 3;
+            var aasRegistryPort = reverseProxyUrl.Port + 3;
+            var smRegistryPort = reverseProxyUrl.Port + 4;
 
             // Build the Submodel Repository server
             Logger.Info("Starting Submodel Repository Http-Server...");
@@ -97,33 +98,62 @@ namespace BaSyx.AASX.SM.Server.Http.App
             _ = aasRepositoryServer.RunAsync();
 
             // Build the AAS registry Server
-            Logger.Info("Starting registry Http-Server...");
+            Logger.Info("Starting AAS registry Http-Server...");
+            var aasRegistryProvider = new InMemoryRegistry();
 
-            var registrySettings = ServerSettings.CreateSettings();
-            registrySettings.ServerConfig.Hosting.ContentPath = "SubmodelContent";
-            registrySettings.ServerConfig.Hosting.Environment = "Development";
-            registrySettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{registryPort}");
-
-            var registryImpl = new InMemoryRegistry();
-            var registryServer = new RegistryHttpServer(registrySettings);
-            registryServer.WebHostBuilder.UseNLog();
-            registryServer.AddBaSyxUI(PageNames.AssetAdministrationShellRegistryServer);
-            registryServer.AddSwagger(Interface.AssetAdministrationShellRegistry);
-            registryServer.SetRegistryProvider(registryImpl);
+            var aasRegistrySettings = ServerSettings.CreateSettings();
+            aasRegistrySettings.ServerConfig.Hosting.ContentPath = "AasRegistryContent";
+            aasRegistrySettings.ServerConfig.Hosting.Environment = "Development";
+            aasRegistrySettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{aasRegistryPort}");
+            
+            var aasRegistryServer = new RegistryHttpServer(aasRegistrySettings);
+            aasRegistryServer.WebHostBuilder.UseNLog();
+            aasRegistryServer.AddBaSyxUI(PageNames.AssetAdministrationShellRegistryServer);
+            aasRegistryServer.AddSwagger(Interface.AssetAdministrationShellRegistry);
+            aasRegistryServer.SetRegistryProvider(aasRegistryProvider);
 
             //Start mDNS Discovery ability when the server successfully booted up
-            registryServer.ApplicationStarted = () =>
+            aasRegistryServer.ApplicationStarted = () =>
             {
-                registryImpl.StartDiscovery();
+                aasRegistryProvider.StartDiscovery();
             };
 
-            //Start mDNS Discovery when the server is shutting down
-            registryServer.ApplicationStopping = () =>
+            //Stop mDNS Discovery when the server is shutting down
+            aasRegistryServer.ApplicationStopping = () =>
             {
-                registryImpl.StopDiscovery();
+                aasRegistryProvider.StopDiscovery();
             };
 
-            _ = registryServer.RunAsync();
+            _ = aasRegistryServer.RunAsync();
+
+            // Build the AAS registry Server
+            Logger.Info("Starting Submodel registry Http-Server...");
+            var smRegistryProvider = new SubmodelInMemoryRegistry();
+
+            var smRegistrySettings = ServerSettings.CreateSettings();
+            smRegistrySettings.ServerConfig.Hosting.ContentPath = "SubmodelRegistryContent";
+            smRegistrySettings.ServerConfig.Hosting.Environment = "Development";
+            smRegistrySettings.ServerConfig.Hosting.Urls.Add($"http://0.0.0.0:{smRegistryPort}");
+
+            var smRegistryServer = new SubmodelRegistryHttpServer(smRegistrySettings);
+            smRegistryServer.WebHostBuilder.UseNLog();
+            smRegistryServer.AddBaSyxUI(PageNames.SubmodelRepositoryServer);
+            smRegistryServer.AddSwagger(Interface.SubmodelRegistry);
+            smRegistryServer.SetRegistryProvider(smRegistryProvider);
+
+            //Start mDNS Discovery ability when the server successfully booted up
+            smRegistryServer.ApplicationStarted = () =>
+            {
+                smRegistryProvider.StartDiscovery();
+            };
+
+            //Stop mDNS Discovery when the server is shutting down
+            smRegistryServer.ApplicationStopping = () =>
+            {
+                smRegistryProvider.StopDiscovery();
+            };
+
+            _ = smRegistryServer.RunAsync();
 
             // Start YARP reverse proxy on public port (e.g. 5043)
             var builder = WebApplication.CreateBuilder(args);
@@ -149,7 +179,13 @@ namespace BaSyx.AASX.SM.Server.Http.App
                         {
                             RouteId = "shell-descriptors",
                             Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/shell-descriptors/{**catch-all}" },
-                            ClusterId = "registryCluster"
+                            ClusterId = "aas-registryCluster"
+                        },
+                        new Yarp.ReverseProxy.Configuration.RouteConfig
+                        {
+                            RouteId = "submodel-descriptors",
+                            Match = new Yarp.ReverseProxy.Configuration.RouteMatch { Path = "/submodel-descriptors/{**catch-all}" },
+                            ClusterId = "sm-registryCluster"
                         }
                     ],
                     [
@@ -171,10 +207,18 @@ namespace BaSyx.AASX.SM.Server.Http.App
                         },
                         new Yarp.ReverseProxy.Configuration.ClusterConfig
                         {
-                            ClusterId = "registryCluster",
+                            ClusterId = "aas-registryCluster",
                             Destinations = new Dictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig>
                             {
-                                { "shell-descriptors", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{registryPort}/" }}
+                                { "shell-descriptors", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{aasRegistryPort}/" }}
+                            }
+                        },
+                        new Yarp.ReverseProxy.Configuration.ClusterConfig
+                        {
+                            ClusterId = "sm-registryCluster",
+                            Destinations = new Dictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig>
+                            {
+                                { "submodel-descriptors", new Yarp.ReverseProxy.Configuration.DestinationConfig { Address = $"http://127.0.0.1:{smRegistryPort}/" }}
                             }
                         }
                     ]
@@ -188,7 +232,8 @@ namespace BaSyx.AASX.SM.Server.Http.App
                 status_code = 200,
                 submodel_repository_server_url = $"http://127.0.0.1:{submodelRepoPort}/",
                 aas_repository_server_url = $"http://127.0.0.1:{aasRepoPort}/",
-                register_server_url = $"http://127.0.0.1:{registryPort}/"
+                aas_register_server_url = $"http://127.0.0.1:{aasRegistryPort}/",
+                sm_register_server_url = $"http://127.0.0.1:{smRegistryPort}/"
             }));
             app.Run();
         }
