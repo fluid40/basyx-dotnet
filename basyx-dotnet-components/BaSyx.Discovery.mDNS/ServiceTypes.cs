@@ -14,5 +14,7 @@ namespace BaSyx.Discovery.mDNS
     {
         public const string AAS_SERVICE_TYPE = "_aas_service._tcp";
         public const string REGISTRY_SERVICE_TYPE = "_registry_service._tcp";
+        public const string SM_SERVICE_TYPE = "_sm_service._tcp";
+        public const string SM_REGISTRY_SERVICE_TYPE = "_sm_registry_service._tcp";
     }
 }
