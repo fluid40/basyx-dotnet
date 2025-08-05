@@ -48,7 +48,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 ## Infrastructure
 - Add Docker support for BaSyx.AASX.SM.Server.Http.App
 - Add Docker support for BaSyx.Repo.Server.Http.App
-- Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/danielkleinemag)
+- Add a GitHub workflow to create images of Docker-supported applications and transfer them to Docker Hub (https://hub.docker.com/repositories/engineeringmethodsag)
 - Add Nunit tests to GitHub workflow
 
 # Known Issues

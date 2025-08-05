@@ -150,11 +150,11 @@ jobs:
         with:
           file: Dockerfile.Repo.Server
           push: true
-          tags: danielkleinemag/fluid-basyx-dotnet-repo-server:latest
+          tags: engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest
 
       - name: Build and push fluid-basyx-dotnet-aas-sm-server image
         uses: docker/build-push-action@v5
         with:
           file: Dockerfile.AASX.SM.Server
           push: true
-          tags: danielkleinemag/fluid-basyx-dotnet-aas-sm-server:latest
+          tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
