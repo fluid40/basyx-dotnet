@@ -126,6 +126,17 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(204)]
         public IActionResult PutAssetAdministrationShellById(string aasIdentifier, [FromBody] IAssetAdministrationShell aas)
         {
+            if (string.IsNullOrEmpty(aasIdentifier))
+                return ResultHandling.NullResult(nameof(aasIdentifier));
+            if (aas == null)
+                return ResultHandling.NullResult(nameof(aas));
+
+            var decodedAasIdentifier = ResultHandling.Base64UrlDecode(aasIdentifier);
+
+            // ID of aas to update must match the ID in the body
+            if (decodedAasIdentifier != aas.Id.Id)
+                return new BadRequestObjectResult(new Result(false, new Message(MessageType.Error, $"The provided Asset Administration Shell identifier '{aasIdentifier}' does not match the identifier in the body '{aas.Id}'.")));
+
             return _aasController.PutAssetAdministrationShellById(aasIdentifier, aas);
         }
 

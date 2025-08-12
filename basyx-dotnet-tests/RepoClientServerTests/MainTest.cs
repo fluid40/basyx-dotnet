@@ -120,16 +120,20 @@ namespace RepoClientServerTests
         }
 
         [TestMethod]
-        public void Test005_PutShellsById()
+        [DataRow("", true)]
+        [DataRow("PutShell", false)]
+        public void Test005_PutShellsById(string idShort, bool putSuccessful)
         {
-            var id = "PutShell";
-            var putShell = new AssetAdministrationShell(id, new BaSyxShellIdentifier(id, "1.0.0"))
+            if (string.IsNullOrEmpty(idShort))
+                idShort = AdminShell.IdShort;
+
+            var putShell = new AssetAdministrationShell(idShort, new BaSyxShellIdentifier(idShort, "1.0.0"))
             {
                 Description = new LangStringSet()
-                {
-                    new LangString("de-DE", "Put VWS"),
-                    new LangString("en-US", "Put AAS")
-                },
+            {
+                new LangString("de-DE", "Put VWS"),
+                new LangString("en-US", "Put AAS")
+            },
                 AssetInformation = new AssetInformation()
                 {
                     AssetKind = AssetKind.Instance,
@@ -139,10 +143,18 @@ namespace RepoClientServerTests
 
             var result = PutShellsById(AdminShell.Id, putShell);
 
+            if (!putSuccessful)
+            {
+                result.Success.Should().BeFalse();
+                var falseResult = GetShellsById(putShell.Id);
+                falseResult.Success.Should().BeFalse();
+                return;
+            }
+
             result.Success.Should().BeTrue();
             
-            var falseResult = GetShellsById(putShell.Id);
-            falseResult.Success.Should().BeFalse();
+            var getResult = GetShellsById(putShell.Id);
+            getResult.Success.Should().BeTrue();
 
             var trueResult = GetShellsById(AdminShell.Id);
             trueResult.Success.Should().BeTrue();
