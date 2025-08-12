@@ -243,5 +243,19 @@ namespace BaSyx.API.ServiceProvider
 
             return new Result<ISubmodel>(false, new NotFoundMessage("Submodel Service Provider"));
         }
+
+        public IResult ReplaceSubmodel(Identifier id, ISubmodel submodel)
+        {
+            if (string.IsNullOrEmpty(id))
+                return new Result<ISubmodel>(new ArgumentNullException(nameof(id)));
+            if (submodel == null)
+                return new Result<ISubmodel>(new ArgumentNullException(nameof(submodel)));
+
+            var retrievedSubmodelServiceProvider = GetSubmodelServiceProvider(id);
+            if (retrievedSubmodelServiceProvider.TryGetEntity(out ISubmodelServiceProvider serviceProvider))
+                return serviceProvider.ReplaceSubmodel(submodel);
+
+            return new Result<ISubmodel>(false, new NotFoundMessage("Submodel Service Provider"));
+        }
     }
 }

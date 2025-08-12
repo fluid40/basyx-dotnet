@@ -433,6 +433,11 @@ namespace SubmodelRepoClientServerTests
             return ((ISubmodelRepositoryClient)RepoClient).UpdateSubmodelAsync(id, submodel);
         }
 
+        public Task<IResult> ReplaceSubmodelAsync(Identifier id, ISubmodel submodel)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IResult> DeleteSubmodelAsync(Identifier id)
         {
             return ((ISubmodelRepositoryClient)RepoClient).DeleteSubmodelAsync(id);
@@ -456,6 +461,11 @@ namespace SubmodelRepoClientServerTests
         public IResult UpdateSubmodel(Identifier id, ISubmodel submodel)
         {
             return ((ISubmodelRepositoryInterface)RepoClient).UpdateSubmodel(id, submodel);
+        }
+
+        public IResult ReplaceSubmodel(Identifier id, ISubmodel submodel)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult DeleteSubmodel(Identifier id)

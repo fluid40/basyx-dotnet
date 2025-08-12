@@ -27,6 +27,8 @@ namespace BaSyx.API.Clients
 
         Task<IResult> UpdateSubmodelAsync(Identifier id, ISubmodel submodel);
 
+        Task<IResult> ReplaceSubmodelAsync(Identifier id, ISubmodel submodel);
+
         Task<IResult> DeleteSubmodelAsync(Identifier id);
     }
 }
