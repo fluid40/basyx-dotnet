@@ -55,3 +55,4 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 # Known Issues
 - Missing (currently not possible) serialization/deserialization of the `OnMethodCalled` property in the `Operation` class. Therefore, this property cannot be set via Rest API endpoints or is destroyed when using Rest API endpoints (e.g. update endpoints) if it has already been set.
 - To add a submodel reference to an AAS object in the data model, a complete submodel object must be added to the 'submodels' property of the ASS
+- In AAS and Submodel, empty list properties (e.g. display name and description) are returned as empty lists rather than as the 'null' value. This can cause problems with some converters. The reason for this is the default initialization of list properties.
