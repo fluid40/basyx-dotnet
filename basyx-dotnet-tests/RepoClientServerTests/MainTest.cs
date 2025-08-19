@@ -212,6 +212,31 @@ namespace RepoClientServerTests
             falseResult.Entity.Should().BeNull();
         }
 
+        [TestMethod]
+        public void Test009_PostSubmodel()
+        {
+            var result = PostSubmodel(Submodel);
+
+            result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
+            result.Entity.SubmodelElements.Count.Should().Be(10);
+            result.Entity.Description.Should().BeEquivalentTo(Submodel.Description);
+            result.Entity.DisplayName.Should().BeEquivalentTo(Submodel.DisplayName);
+        }
+
+        [TestMethod]
+        public void Test010_GetSubmodelById()
+        {
+            var result = RetrieveSubmode(Submodel.Id);
+
+            result.Success.Should().BeTrue();
+            result.Entity.Should().NotBeNull();
+            
+            var falseResult = RetrieveSubmode("NonExistingId");
+            falseResult.Success.Should().BeFalse();
+            falseResult.Entity.Should().BeNull();
+        }
+
         #endregion
 
         #region AAS Repository Client
@@ -265,9 +290,20 @@ namespace RepoClientServerTests
 
         #region Submodel Repository Client
 
+        public IResult<ISubmodel> PostSubmodel(ISubmodel sm)
+        {
+            return ((ISubmodelRepositoryClient)SubmodelRepoClient).CreateSubmodelAsync(sm).GetAwaiter().GetResult();
+        }
+
         public Task<IResult<ISubmodel>> CreateSubmodelAsync(ISubmodel submodel)
         {
             return ((ISubmodelRepositoryClient)SubmodelRepoClient).CreateSubmodelAsync(submodel);
+        }
+
+
+        public IResult<ISubmodel> RetrieveSubmode(Identifier id)
+        {
+            return RetrieveSubmodelAsync(id).GetAwaiter().GetResult();
         }
 
         public Task<IResult<ISubmodel>> RetrieveSubmodelAsync(Identifier id)

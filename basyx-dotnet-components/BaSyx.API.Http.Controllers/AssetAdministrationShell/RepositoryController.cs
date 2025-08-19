@@ -17,6 +17,9 @@ using BaSyx.Utils.ResultHandling.ResultTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -1793,7 +1796,15 @@ namespace BaSyx.API.Http.Controllers
         [ProducesResponseType(typeof(Result), 500)]
         public IActionResult GetSubmodelById(string submodelIdentifier, [FromQuery] RequestLevel level = default, [FromQuery] RequestExtent extent = default)
         {
-            return _smController.GetSubmodelById(submodelIdentifier, level, extent);
+            var result = _smController.GetSubmodelById(submodelIdentifier, level, extent);
+
+            if (result is ContentResult contentResult)
+            {
+                contentResult.Content = ReplaceEmptyArrays(contentResult.Content);
+                return contentResult;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -2567,6 +2578,26 @@ namespace BaSyx.API.Http.Controllers
             });
         }
 
-        #endregion     
+        #endregion
+
+        public static string ReplaceEmptyArrays(string json)
+        {
+            var token = JToken.Parse(json);
+            ReplaceEmptyArraysRecursive(token);
+            return token.ToString();
+        }
+
+        private static void ReplaceEmptyArraysRecursive(JToken token)
+        {
+            if (token.Type == JTokenType.Array)
+            {
+                var arr = (JArray)token;
+                if (arr.Count == 0)
+                {
+                    token.Replace(JValue.CreateNull());
+                    return;
+                }
+            }
+        }
     }
 }
