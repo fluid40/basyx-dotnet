@@ -279,49 +279,49 @@ namespace DevelopmentSubmodel
 
             Submodel testSubmodel = new Submodel(domainId, new BaSyxSubmodelIdentifier(domainId, "1.0.0"))
             {
-                //Description = new LangStringSet()
-                //{
-                //    new("de-DE", "Submodel für die Entwicklung"),
-                //    new("en-US", "submodel for development")
-                //},
-                //Administration = new AdministrativeInformation()
-                //{
-                //    Version = "1.0",
-                //    Revision = "1"
-                //},
-                //DisplayName = new LangStringSet()
-                //{
-                //    new("de-DE", "Submodel"),
-                //    new("en-US", "submodel")
-                //},
+                Description = new LangStringSet()
+                {
+                    new("de-DE", "Submodel für die Entwicklung"),
+                    new("en-US", "submodel for development")
+                },
+                Administration = new AdministrativeInformation()
+                {
+                    Version = "1.0",
+                    Revision = "1"
+                },
+                DisplayName = new LangStringSet()
+                {
+                    new("de-DE", "Submodel"),
+                    new("en-US", "submodel")
+                },
                 Category = "test_category",
                 SemanticId = new Reference(new Key(KeyType.GlobalReference, new BaSyxPropertyIdentifier("HelloSubmodelElementList", "1.0.0").ToUrn())),
-                //ConceptDescription = new ConceptDescription()
-                //{
-                //	Id = new Identifier("0173-1#02-AAO689#001"),
-                //	EmbeddedDataSpecifications = new List<IEmbeddedDataSpecification>()
-                //	{
-                //		new DataSpecificationIEC61360(new DataSpecificationIEC61360Content()
-                //		{
-                //			PreferredName = new LangStringSet { new LangString("en", "identifying order number") },
-                //			Definition =  new LangStringSet { new LangString("en", "unique classifying number that enables to name an object and to order it from a supplier or manufacturer") },
-                //			DataType = DataTypeIEC61360.STRING
-                //		})
-                //	},
-                //},
-                //EmbeddedDataSpecifications = new List<IEmbeddedDataSpecification>()
-                //{
-                //	new DataSpecificationIEC61360(new DataSpecificationIEC61360Content()
-                //	{
-                //		PreferredName = new LangStringSet { new LangString("en", "identifying order number") },
-                //		Definition =  new LangStringSet { new LangString("en", "unique classifying number that enables to name an object and to order it from a supplier or manufacturer") },
-                //		DataType = DataTypeIEC61360.STRING
-                //	})
-                //},
-                //SupplementalSemanticIds = new List<IReference>()
-                //            {
-                //                new Reference(new Key(KeyType.GlobalReference, new BaSyxPropertyIdentifier("HelloSubmodelElementList", "1.0.0").ToUrn())),
-                //            },
+                ConceptDescription = new ConceptDescription()
+                {
+                    Id = new Identifier("0173-1#02-AAO689#001"),
+                    EmbeddedDataSpecifications = new List<IEmbeddedDataSpecification>()
+                    {
+                        new DataSpecificationIEC61360(new DataSpecificationIEC61360Content()
+                        {
+                            PreferredName = new LangStringSet { new LangString("en", "identifying order number") },
+                            Definition =  new LangStringSet { new LangString("en", "unique classifying number that enables to name an object and to order it from a supplier or manufacturer") },
+                            DataType = DataTypeIEC61360.STRING
+                        })
+                    },
+                },
+                EmbeddedDataSpecifications = new List<IEmbeddedDataSpecification>()
+                {
+                    new DataSpecificationIEC61360(new DataSpecificationIEC61360Content()
+                    {
+                        PreferredName = new LangStringSet { new LangString("en", "identifying order number") },
+                        Definition =  new LangStringSet { new LangString("en", "unique classifying number that enables to name an object and to order it from a supplier or manufacturer") },
+                        DataType = DataTypeIEC61360.STRING
+                    })
+                },
+                SupplementalSemanticIds = new List<IReference>()
+                            {
+                                new Reference(new Key(KeyType.GlobalReference, new BaSyxPropertyIdentifier("HelloSubmodelElementList", "1.0.0").ToUrn())),
+                            },
 
                 SubmodelElements = new ElementContainer<ISubmodelElement>
                 {

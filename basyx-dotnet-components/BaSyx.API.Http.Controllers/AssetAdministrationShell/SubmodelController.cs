@@ -99,7 +99,21 @@ namespace BaSyx.API.Http.Controllers
             }));
 
             string json = JsonSerializer.Serialize(result.Entity, jsonOptions);
-            return Content(json, "application/json");            
+            return Content(json, "application/json");
+
+
+
+            //var jsonOptions = new GlobalJsonSerializerOptions().Build();
+            //jsonOptions.Converters.Add(new SubmodelConverter(new ConverterOptions()
+            //    {
+            //        ValueSerialization = true,
+            //        RequestLevel = level,
+            //        RequestExtent = extent
+            //}
+            //));
+
+            //string json = JsonSerializer.Serialize(result.Entity, jsonOptions);
+            //return Content(json, "application/json");
         }
 
         /// <summary>

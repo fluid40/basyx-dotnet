@@ -11,14 +11,11 @@
 
 using BaSyx.API.ServiceProvider;
 using BaSyx.Models.AdminShell;
-using BaSyx.Models.Connectivity;
 using BaSyx.Utils.ResultHandling;
 using BaSyx.Utils.ResultHandling.ResultTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
