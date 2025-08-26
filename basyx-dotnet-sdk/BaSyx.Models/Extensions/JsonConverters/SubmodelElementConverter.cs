@@ -525,7 +525,7 @@ namespace BaSyx.Models.Extensions
                         JsonSerializer.Serialize(writer, property.ValueId, options);
                     }
                     if (property.ValueType != null)
-                        writer.WriteString("valueType", property.ValueType.ToString());
+                        writer.WriteString("valueType", $"xs:{property.ValueType.ToString()}");
                     break;
                 case ModelTypes.BasicEventElement:
                     var bee = (BasicEventElement)value;
