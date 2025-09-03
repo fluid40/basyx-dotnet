@@ -187,7 +187,15 @@ jobs:
           push: true
           tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
 
-      - name: Update version variable
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git tag v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }}
+
+      - name: Update Version variable
         env:
           PAT_GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
         run: |
