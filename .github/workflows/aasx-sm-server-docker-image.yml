@@ -178,14 +178,18 @@ jobs:
         with:
           file: Dockerfile.Repo.Server
           push: true
-          tags: engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest
+          tags: | 
+            engineeringmethodsag/fluid-basyx-dotnet-repo-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}
+            engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest
 
       - name: Build and push fluid-basyx-dotnet-aas-sm-server image
         uses: docker/build-push-action@v5
         with:
           file: Dockerfile.AASX.SM.Server
           push: true
-          tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
+          tags: |
+            engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}
+            engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
 
       - name: Create Git Tag
         run: |
