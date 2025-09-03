@@ -5,6 +5,9 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: write
+
 jobs:
   test-admin-shell-client-server:
     runs-on: ubuntu-latest
@@ -183,3 +186,14 @@ jobs:
           file: Dockerfile.AASX.SM.Server
           push: true
           tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
+
+      - name: Update Version variable
+        env:
+          PAT_GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+        run: |
+          echo "Updating VERSION_PATCH to ${{ steps.version.outputs.patch }}"
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $PAT_GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/variables/VERSION_PATCH \
+            -d "{\"value\":\"${{ steps.version.outputs.patch }}\"}"
