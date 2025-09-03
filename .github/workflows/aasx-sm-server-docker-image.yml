@@ -130,7 +130,7 @@ jobs:
           dotnet test basyx-dotnet-tests/SubmodelRepoClientServerTests/SubmodelRepoClientServerTests.csproj --verbosity normal
 
   build-image:
-    if: github.ref == 'refs/heads/dk/update-pipeline'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Build docker image
     needs: [test-admin-shell-client-server, test-admin-shell-repo-client-server, test-registry-client-server, test-submodel-client-server, test-submodel-repo-client-server, test-repo-client-server]
