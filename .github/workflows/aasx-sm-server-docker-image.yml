@@ -5,6 +5,9 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: write
+
 jobs:
   test-admin-shell-client-server:
     runs-on: ubuntu-latest
@@ -131,17 +134,42 @@ jobs:
     runs-on: ubuntu-latest
     name: Build docker image
     needs: [test-admin-shell-client-server, test-admin-shell-repo-client-server, test-registry-client-server, test-submodel-client-server, test-submodel-repo-client-server, test-repo-client-server]
+    env:
+      VERSION_MAJOR: ${{ vars.VERSION_MAJOR }}
+      VERSION_MINOR: ${{ vars.VERSION_MINOR }}
+      VERSION_PATCH: ${{ vars.VERSION_PATCH }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Generate version number
+        id: version
+        run: |
+          MAJOR=${VERSION_MAJOR}
+          MINOR=${VERSION_MINOR}
+          PATCH=${VERSION_PATCH}
+          echo "Current version $MAJOR.$MINOR.$PATCH"
+
+          # update patch number
+          PATCH=$((PATCH + 1))
+
+          VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "New version $VERSION"
+
+          GIT_HASH=$(git rev-parse --short HEAD)
+          echo "Git Hash: $GIT_HASH"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "patch=$PATCH" >> $GITHUB_OUTPUT
+          echo "hash=$GIT_HASH" >> $GITHUB_OUTPUT
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+          
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -150,11 +178,34 @@ jobs:
         with:
           file: Dockerfile.Repo.Server
           push: true
-          tags: engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest
+          tags: | 
+            engineeringmethodsag/fluid-basyx-dotnet-repo-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}
+            engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest
 
       - name: Build and push fluid-basyx-dotnet-aas-sm-server image
         uses: docker/build-push-action@v5
         with:
           file: Dockerfile.AASX.SM.Server
           push: true
-          tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
+          tags: |
+            engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}
+            engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
+
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git tag v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }}
+
+      - name: Update Version variable
+        env:
+          PAT_GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+        run: |
+          echo "Updating VERSION_PATCH to ${{ steps.version.outputs.patch }}"
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $PAT_GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/variables/VERSION_PATCH \
+            -d "{\"value\":\"${{ steps.version.outputs.patch }}\"}"
