@@ -187,7 +187,7 @@ jobs:
           push: true
           tags: engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
 
-      - name: Update Version variable
+      - name: Update version variable
         env:
           PAT_GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
         run: |
