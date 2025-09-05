@@ -32,6 +32,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Change http method from delete to get for endpoint `/shells/{aasIdentifier}/$reference` (AssetAdministrationShellRepositoryController)
 - Fixed put '/submodels/{submodelIdentifier}' endpoint to replace submodel instead of update the submodel (SubmodelRepositoryController)
 - Fixed Submodel element serialization to write `valueType` property tp use XSD data type definition (SubmodelElementConverter)
+- The processing of values for Boolean properties has been corrected when these are provided as strings via the REST API. The return format for Boolean values via the REST API has been improved (upper- / lower-case).
 
 ## Features
 - Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)
