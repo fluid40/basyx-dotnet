@@ -627,8 +627,12 @@ namespace BaSyx.Models.Extensions
 			}
 			else if (reader.TokenType == JsonTokenType.String)
 			{
-				string value = reader.GetString();
-				return new ElementValue(value, dataType ?? typeof(string));
+                string value = reader.GetString();
+
+                if (_dataType?.DataObjectType == DataObjectType.Bool && bool.TryParse(value, out bool result))
+                    return new ElementValue(value, dataType ?? typeof(bool));
+
+                return new ElementValue(value, dataType ?? typeof(string));
 			}
 			else if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
 			{
