@@ -478,7 +478,9 @@ namespace BaSyx.Models.Extensions
         {
             bool valueSerialized = false;
 
-            writer.WriteString("idShort", value.IdShort);
+            if (!string.IsNullOrEmpty(value.IdShort))
+                writer.WriteString("idShort", value.IdShort);
+
             writer.WriteString("kind", value.Kind.ToString());
             writer.WriteString("modelType", value.ModelType.ToString());
 
