@@ -204,12 +204,8 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
-          body: |
-            Automated release from CI workflow.
-            Version: ${{ steps.version.outputs.version }}
-            Git Hash: ${{ steps.version.outputs.hash }}
-          draft: false
-          prerelease: false
+          generate_release_notes: true
+          files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
