@@ -9,6 +9,7 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 using BaSyx.Models.AdminShell;
+using BaSyx.Models.Extensions.JsonConverters;
 using BaSyx.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -514,7 +515,16 @@ namespace BaSyx.Models.Extensions
             if (value.Qualifiers?.Count() > 0)
             {
                 writer.WritePropertyName("qualifiers");
-                JsonSerializer.Serialize(writer, value.Qualifiers, options);
+                var qualifierConverter = new QualifiersConverter();
+                writer.WriteStartArray();
+                foreach (var iQualifier in value.Qualifiers)
+                {
+                    writer.WriteStartObject();
+                    var qualifier = iQualifier as Qualifier;
+                    qualifierConverter.Write(writer, qualifier, options);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
             }
 
             switch (value.ModelType.Type)
