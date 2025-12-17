@@ -978,20 +978,22 @@ namespace BaSyx.API.Http.Controllers
 
             if (fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
-            string fileName = fileElement.Value.Value.TrimStart('/');
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
+            var fileName = fileElement.Value.Value.TrimStart('/');
 
-            IFileProvider fileProvider = hostingEnvironment.ContentRootFileProvider;
+            var fileProvider = hostingEnvironment.ContentRootFileProvider;
             var file = fileProvider.GetFileInfo(fileName);
             
             if (file.Exists && !string.IsNullOrEmpty(file.PhysicalPath))
                 System.IO.File.Delete(file.PhysicalPath);
             else
                 return NotFound(new { message = "Physical file not found", itemId = file.PhysicalPath });
+            
+            fileElement.Value.Value = string.Empty;
 
             return Ok();
         }
