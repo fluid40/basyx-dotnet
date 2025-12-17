@@ -992,8 +992,8 @@ namespace BaSyx.API.Http.Controllers
                 System.IO.File.Delete(file.PhysicalPath);
             else
                 return NotFound(new { message = "Physical file not found", itemId = file.PhysicalPath });
-            
-            fileElement.Value.Value = string.Empty;
+
+            fileElement.Value.Value = null;
 
             return Ok();
         }
