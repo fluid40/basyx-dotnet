@@ -33,6 +33,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Fixed put '/submodels/{submodelIdentifier}' endpoint to replace submodel instead of update the submodel (SubmodelRepositoryController)
 - Fixed Submodel element serialization to write `valueType` property tp use XSD data type definition (SubmodelElementConverter)
 - The processing of values for Boolean properties has been corrected when these are provided as strings via the REST API. The return format for Boolean values via the REST API has been improved (upper- / lower-case).
+- Fix the set of file names and values if the attachment is posted, deleted or put to a file sub-model element.
 
 ## Features
 - Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)

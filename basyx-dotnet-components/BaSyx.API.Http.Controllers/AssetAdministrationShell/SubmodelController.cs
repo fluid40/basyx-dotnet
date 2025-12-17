@@ -927,26 +927,28 @@ namespace BaSyx.API.Http.Controllers
             
             if (fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
 
-            // keep existing path if available, otherwise set path to uploaded file name
-            string fileName;
-            if (fileElement.Value.Value != null)
-                fileName = fileElement.Value.Value.TrimStart('/');
-            else
+            // Delete existing file if any
+            if (!string.IsNullOrEmpty(fileElement.Value.Value))
             {
-                fileName = file.FileName;
-                fileElement.Value.Value = "/" + fileName.Replace("\\", "/");
+                var fileProvider = hostingEnvironment.ContentRootFileProvider;
+                var existingFile = fileProvider.GetFileInfo(fileElement.Value.Value.TrimStart('/'));
+                if (existingFile.Exists && !string.IsNullOrEmpty(existingFile.PhysicalPath))
+                    System.IO.File.Delete(existingFile.PhysicalPath);
             }
+
+            var fileName = file.FileName;
+            fileElement.Value.Value = "/" + fileName.Replace("\\", "/");
             
             var filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            using (var stream = System.IO.File.Create(filePath))
+            await using (var stream = System.IO.File.Create(filePath))
             {
                 await file.CopyToAsync(stream);
             }
@@ -976,20 +978,22 @@ namespace BaSyx.API.Http.Controllers
 
             if (fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
-            string fileName = fileElement.Value.Value.TrimStart('/');
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
+            var fileName = fileElement.Value.Value.TrimStart('/');
 
-            IFileProvider fileProvider = hostingEnvironment.ContentRootFileProvider;
+            var fileProvider = hostingEnvironment.ContentRootFileProvider;
             var file = fileProvider.GetFileInfo(fileName);
             
             if (file.Exists && !string.IsNullOrEmpty(file.PhysicalPath))
                 System.IO.File.Delete(file.PhysicalPath);
             else
                 return NotFound(new { message = "Physical file not found", itemId = file.PhysicalPath });
+            
+            fileElement.Value.Value = string.Empty;
 
             return Ok();
         }
