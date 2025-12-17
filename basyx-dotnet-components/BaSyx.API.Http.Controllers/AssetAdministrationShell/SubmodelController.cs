@@ -933,14 +933,18 @@ namespace BaSyx.API.Http.Controllers
 
             IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
 
+            // keep existing path if available, otherwise set path to uploaded file name
             string fileName;
             if (fileElement.Value.Value != null)
                 fileName = fileElement.Value.Value.TrimStart('/');
             else
+            {
                 fileName = file.FileName;
-
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
+                fileElement.Value.Value = "/" + fileName.Replace("\\", "/");
+            }
             
+            var filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
+
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             using (var stream = System.IO.File.Create(filePath))
             {
