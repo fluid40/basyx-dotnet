@@ -35,6 +35,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - The processing of values for Boolean properties has been corrected when these are provided as strings via the REST API. The return format for Boolean values via the REST API has been improved (upper- / lower-case).
 - The set of file names and values has been fixed if the attachment is posted, deleted, or assigned to a sub-model element of a file.
 - An error has been fixed that occurred when trying to get the content of a file submodel element if the value was empty.
+- Correct the return codes for certain endpoints so that they correspond to the specifications.
 
 ## Features
 - Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)

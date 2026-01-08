@@ -223,15 +223,15 @@ namespace BaSyx.API.Http.Controllers
             else
                 fileName = retrieveAssetInformation.Entity.DefaultThumbnail.Path.TrimStart('/');
             
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
+            var filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            using (var stream = System.IO.File.Create(filePath))
+            await using (var stream = System.IO.File.Create(filePath))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>

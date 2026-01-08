@@ -1852,7 +1852,7 @@ namespace BaSyx.API.Http.Controllers
         /// <response code="200">Submodel deleted successfully</response>
         [HttpDelete(SubmodelRepositoryRoutes.SUBMODEL_BYID, Name = "DeleteSubmodelById")]
         [Produces("application/json")]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(200)]
         public IActionResult DeleteSubmodelById(string submodelIdentifier)
         {
             return _smController.DeleteSubmodelById(submodelIdentifier);

@@ -909,13 +909,13 @@ namespace BaSyx.API.Http.Controllers
         /// <param name="idShortPath">IdShort path to the submodel element (dot-separated), in this case a file</param>
         /// <param name="file">Content to upload</param>
         /// <returns></returns>
-        /// <response code="200">Content uploaded successfully</response>
+        /// <response code="204">Content uploaded successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">File not found</response>
         [HttpPut(SubmodelRoutes.SUBMODEL + SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH_ATTACHMENT, Name = "PutFileByPath")]
         [Produces("application/json")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(typeof(Result), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<IActionResult> PutFileByPath(string idShortPath, IFormFile file)
@@ -957,7 +957,7 @@ namespace BaSyx.API.Http.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
