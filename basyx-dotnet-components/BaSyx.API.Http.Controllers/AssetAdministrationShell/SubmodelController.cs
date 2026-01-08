@@ -877,20 +877,24 @@ namespace BaSyx.API.Http.Controllers
 
             if(fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
-            string fileName = fileElement.Value.Value.TrimStart('/');
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
 
-            IFileProvider fileProvider = hostingEnvironment.ContentRootFileProvider;
+            if (fileElement.Value == null || string.IsNullOrEmpty(fileElement.Value.Value))
+                return NotFound(new { message = "No file content available", itemId = idShortPath });
+
+            var fileName = fileElement.Value.Value.TrimStart('/');
+
+            var fileProvider = hostingEnvironment.ContentRootFileProvider;
             var file = fileProvider.GetFileInfo(fileName);
             if (file.Exists)
             {
                 if (MimeTypes.TryGetContentType(file.PhysicalPath, out string contentType))
                 {
-                    string fileNameOnly = Path.GetFileName(file.PhysicalPath);
+                    var fileNameOnly = Path.GetFileName(file.PhysicalPath);
                     return File(file.CreateReadStream(), contentType, fileNameOnly);
                 }                   
             }
