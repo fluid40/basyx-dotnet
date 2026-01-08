@@ -268,7 +268,7 @@ namespace BaSyx.API.ServiceProvider
             if (sp.Success)
                 return new Result<IReference>(false, new ConflictMessage($"Submodel with id {submodelRef.First.Value}"));
 
-            Submodel tempSubmodel = new Submodel(Guid.NewGuid().ToString(), new Identifier(submodelRef.First.Value));
+            var tempSubmodel = new Submodel(Guid.NewGuid().ToString(), new Identifier(submodelRef.First.Value));
             _assetAdministrationShell.Submodels.Add(tempSubmodel);
             var tempSubmodelSp = tempSubmodel.CreateServiceProvider();
             var result = RegisterSubmodelServiceProvider(tempSubmodel.Id, tempSubmodelSp);

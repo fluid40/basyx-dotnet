@@ -36,6 +36,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - The set of file names and values has been fixed if the attachment is posted, deleted, or assigned to a sub-model element of a file.
 - An error has been fixed that occurred when trying to get the content of a file submodel element if the value was empty.
 - Correct the return codes for certain endpoints so that they correspond to the specifications.
+- The deletion of submodel references from an AAS has been fixed.
 
 ## Features
 - Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)
