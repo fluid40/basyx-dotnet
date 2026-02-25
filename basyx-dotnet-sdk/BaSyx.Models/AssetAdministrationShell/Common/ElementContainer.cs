@@ -675,7 +675,19 @@ namespace BaSyx.Models.AdminShell
                     _children[i].Index = i;
             }
             else
+            {
+                var element = _children.FirstOrDefault(c => c.IdShort == idShort);
                 _children.RemoveAll(c => c.IdShort == idShort);
+
+                // delete reference for submodel
+                if (element.Value is ISubmodel submodel && Parent is IAssetAdministrationShell aas)
+                {
+                    var reference = submodel.CreateReference();
+                    // delete reference only if exists
+                    if (aas.SubmodelReferences.Any(e => Reference.IsEqual(e, reference)))
+                        aas.SubmodelReferences.Remove(aas.SubmodelReferences.FirstOrDefault(e => Reference.IsEqual(e, reference)));
+                }
+            }
 
             OnDeleted?.Invoke(this, new ElementContainerEventArgs<TElement>(this, default, ChangedEventType.Deleted) { ElementIdShort = idShort });
         }

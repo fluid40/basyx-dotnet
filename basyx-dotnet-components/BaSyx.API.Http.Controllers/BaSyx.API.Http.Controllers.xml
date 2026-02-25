@@ -2461,7 +2461,7 @@
             <param name="idShortPath">IdShort path to the submodel element (dot-separated), in this case a file</param>
             <param name="file">Content to upload</param>
             <returns></returns>
-            <response code="200">Content uploaded successfully</response>
+            <response code="204">Content uploaded successfully</response>
             <response code="400">Bad Request</response>
             <response code="404">File not found</response>
         </member>

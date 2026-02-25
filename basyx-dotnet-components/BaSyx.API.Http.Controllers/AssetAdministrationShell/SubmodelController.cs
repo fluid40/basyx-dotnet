@@ -877,20 +877,24 @@ namespace BaSyx.API.Http.Controllers
 
             if(fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
-            string fileName = fileElement.Value.Value.TrimStart('/');
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
 
-            IFileProvider fileProvider = hostingEnvironment.ContentRootFileProvider;
+            if (fileElement.Value == null || string.IsNullOrEmpty(fileElement.Value.Value))
+                return NotFound(new { message = "No file content available", itemId = idShortPath });
+
+            var fileName = fileElement.Value.Value.TrimStart('/');
+
+            var fileProvider = hostingEnvironment.ContentRootFileProvider;
             var file = fileProvider.GetFileInfo(fileName);
             if (file.Exists)
             {
                 if (MimeTypes.TryGetContentType(file.PhysicalPath, out string contentType))
                 {
-                    string fileNameOnly = Path.GetFileName(file.PhysicalPath);
+                    var fileNameOnly = Path.GetFileName(file.PhysicalPath);
                     return File(file.CreateReadStream(), contentType, fileNameOnly);
                 }                   
             }
@@ -905,13 +909,13 @@ namespace BaSyx.API.Http.Controllers
         /// <param name="idShortPath">IdShort path to the submodel element (dot-separated), in this case a file</param>
         /// <param name="file">Content to upload</param>
         /// <returns></returns>
-        /// <response code="200">Content uploaded successfully</response>
+        /// <response code="204">Content uploaded successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">File not found</response>
         [HttpPut(SubmodelRoutes.SUBMODEL + SubmodelRoutes.SUBMODEL_ELEMENTS_IDSHORTPATH_ATTACHMENT, Name = "PutFileByPath")]
         [Produces("application/json")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(typeof(Result), 400)]
         [ProducesResponseType(typeof(Result), 404)]
         public async Task<IActionResult> PutFileByPath(string idShortPath, IFormFile file)
@@ -927,27 +931,33 @@ namespace BaSyx.API.Http.Controllers
             
             if (fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
 
-            string fileName;
-            if (fileElement.Value.Value != null)
-                fileName = fileElement.Value.Value.TrimStart('/');
-            else
-                fileName = file.FileName;
+            // Delete existing file if any
+            if (!string.IsNullOrEmpty(fileElement.Value.Value))
+            {
+                var fileProvider = hostingEnvironment.ContentRootFileProvider;
+                var existingFile = fileProvider.GetFileInfo(fileElement.Value.Value.TrimStart('/'));
+                if (existingFile.Exists && !string.IsNullOrEmpty(existingFile.PhysicalPath))
+                    System.IO.File.Delete(existingFile.PhysicalPath);
+            }
 
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
+            var fileName = file.FileName;
+            fileElement.Value.Value = "/" + fileName.Replace("\\", "/");
             
+            var filePath = Path.Combine(hostingEnvironment.ContentRootPath, fileName);
+
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            using (var stream = System.IO.File.Create(filePath))
+            await using (var stream = System.IO.File.Create(filePath))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
@@ -972,20 +982,22 @@ namespace BaSyx.API.Http.Controllers
 
             if (fileElementRetrieved.Entity.ModelType != ModelType.File)
             {
-                Result result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
+                var result = new Result(false, new ErrorMessage($"ModelType of {idShortPath} is not File but {fileElementRetrieved.Entity.ModelType}"));
                 return result.CreateActionResult(CrudOperation.Retrieve);
             }
 
-            IFileElement fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
-            string fileName = fileElement.Value.Value.TrimStart('/');
+            var fileElement = fileElementRetrieved.Entity.Cast<IFileElement>();
+            var fileName = fileElement.Value.Value.TrimStart('/');
 
-            IFileProvider fileProvider = hostingEnvironment.ContentRootFileProvider;
+            var fileProvider = hostingEnvironment.ContentRootFileProvider;
             var file = fileProvider.GetFileInfo(fileName);
             
             if (file.Exists && !string.IsNullOrEmpty(file.PhysicalPath))
                 System.IO.File.Delete(file.PhysicalPath);
             else
                 return NotFound(new { message = "Physical file not found", itemId = file.PhysicalPath });
+
+            fileElement.Value.Value = null;
 
             return Ok();
         }
