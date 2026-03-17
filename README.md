@@ -31,7 +31,7 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Submodel update behavior corrected so that the `IdShort` property can be changed by the input parameter (SubmodelServiceProvider)
 - Change http method from delete to get for endpoint `/shells/{aasIdentifier}/$reference` (AssetAdministrationShellRepositoryController)
 - Fixed put '/submodels/{submodelIdentifier}' endpoint to replace submodel instead of update the submodel (SubmodelRepositoryController)
-- Fixed Submodel element serialization to write `valueType` property tp use XSD data type definition (SubmodelElementConverter)
+- Fixed Submodel element serialization to write `valueType` and `valueTypeListElement` property to use XSD data type definition (SubmodelElementConverter)
 - The processing of values for Boolean properties has been corrected when these are provided as strings via the REST API. The return format for Boolean values via the REST API has been improved (upper- / lower-case).
 - The set of file names and values has been fixed if the attachment is posted, deleted, or assigned to a sub-model element of a file.
 - An error has been fixed that occurred when trying to get the content of a file submodel element if the value was empty.

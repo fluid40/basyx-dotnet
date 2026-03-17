@@ -646,8 +646,10 @@ namespace BaSyx.Models.Extensions
                     }
                     if (sml.TypeValueListElement != null)
                         writer.WriteString("typeValueListElement", sml.TypeValueListElement.Name);
+
                     if (sml.ValueTypeListElement != null)
-                        writer.WriteString("valueTypeListElement", sml.ValueTypeListElement.ToString());
+                        writer.WriteString("valueTypeListElement", $"xs:{sml.ValueTypeListElement.ToString()}");
+
                     if (sml.Value?.Value != null)
                     {
                         valueSerialized = true;
