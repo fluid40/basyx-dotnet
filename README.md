@@ -31,7 +31,12 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Submodel update behavior corrected so that the `IdShort` property can be changed by the input parameter (SubmodelServiceProvider)
 - Change http method from delete to get for endpoint `/shells/{aasIdentifier}/$reference` (AssetAdministrationShellRepositoryController)
 - Fixed put '/submodels/{submodelIdentifier}' endpoint to replace submodel instead of update the submodel (SubmodelRepositoryController)
-- Fixed Submodel element serialization to write `valueType` property tp use XSD data type definition (SubmodelElementConverter)
+- Fixed Submodel element serialization to write `valueType` and `valueTypeListElement` property to use XSD data type definition (SubmodelElementConverter)
+- The processing of values for Boolean properties has been corrected when these are provided as strings via the REST API. The return format for Boolean values via the REST API has been improved (upper- / lower-case).
+- The set of file names and values has been fixed if the attachment is posted, deleted, or assigned to a sub-model element of a file.
+- An error has been fixed that occurred when trying to get the content of a file submodel element if the value was empty.
+- Correct the return codes for certain endpoints so that they correspond to the specifications.
+- The deletion of submodel references from an AAS has been fixed.
 
 ## Features
 - Add Submodel Registry HTTP Server (SubmodelRegistryHttpServer)
@@ -57,3 +62,4 @@ Make sure Visual Studio is closed the first time you run these scripts. The firs
 - Missing (currently not possible) serialization/deserialization of the `OnMethodCalled` property in the `Operation` class. Therefore, this property cannot be set via Rest API endpoints or is destroyed when using Rest API endpoints (e.g. update endpoints) if it has already been set.
 - To add a submodel reference to an AAS object in the data model, a complete submodel object must be added to the 'submodels' property of the ASS
 - In AAS and Submodel, empty list properties (e.g. display name and description) are returned as empty lists rather than as the 'null' value. This can cause problems with some converters. The reason for this is the default initialization of list properties.
+- The structure of the request and response bodies for 'value-only' endpoints does not conform to the specification.

@@ -117,6 +117,8 @@ namespace BaSyx.Models.AdminShell
                 return dbl.ToString(IValue._nfi);
             else if (Value is float flt)
                 return flt.ToString(IValue._nfi);
+            else if (Value is bool boolean)
+                return boolean.ToString().ToLower();
             else
                 return Value?.ToString();
         }

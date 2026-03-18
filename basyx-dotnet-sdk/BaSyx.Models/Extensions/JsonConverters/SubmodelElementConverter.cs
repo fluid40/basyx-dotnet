@@ -9,6 +9,7 @@
 * SPDX-License-Identifier: MIT
 *******************************************************************************/
 using BaSyx.Models.AdminShell;
+using BaSyx.Models.Extensions.JsonConverters;
 using BaSyx.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -478,7 +479,9 @@ namespace BaSyx.Models.Extensions
         {
             bool valueSerialized = false;
 
-            writer.WriteString("idShort", value.IdShort);
+            if (!string.IsNullOrEmpty(value.IdShort))
+                writer.WriteString("idShort", value.IdShort);
+
             writer.WriteString("kind", value.Kind.ToString());
             writer.WriteString("modelType", value.ModelType.ToString());
 
@@ -512,7 +515,16 @@ namespace BaSyx.Models.Extensions
             if (value.Qualifiers?.Count() > 0)
             {
                 writer.WritePropertyName("qualifiers");
-                JsonSerializer.Serialize(writer, value.Qualifiers, options);
+                var qualifierConverter = new QualifiersConverter();
+                writer.WriteStartArray();
+                foreach (var iQualifier in value.Qualifiers)
+                {
+                    writer.WriteStartObject();
+                    var qualifier = iQualifier as Qualifier;
+                    qualifierConverter.Write(writer, qualifier, options);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
             }
 
             switch (value.ModelType.Type)
@@ -634,8 +646,10 @@ namespace BaSyx.Models.Extensions
                     }
                     if (sml.TypeValueListElement != null)
                         writer.WriteString("typeValueListElement", sml.TypeValueListElement.Name);
+
                     if (sml.ValueTypeListElement != null)
-                        writer.WriteString("valueTypeListElement", sml.ValueTypeListElement.ToString());
+                        writer.WriteString("valueTypeListElement", $"xs:{sml.ValueTypeListElement.ToString()}");
+
                     if (sml.Value?.Value != null)
                     {
                         valueSerialized = true;

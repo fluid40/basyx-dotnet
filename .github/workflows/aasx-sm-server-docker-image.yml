@@ -191,6 +191,14 @@ jobs:
             engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}
             engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest
 
+      - name: Generate Changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          configuration: .github/changelog-config.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Git Tag
         run: |
           git config user.name "github-actions"
@@ -198,6 +206,32 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git tag v${{ steps.version.outputs.version }}
           git push origin v${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: "🚀 Release v${{ steps.version.outputs.version }}"
+          generate_release_notes: true
+          body: |
+            ## 📝 Release Notes
+
+            **Version:** v${{ steps.version.outputs.version }}
+            **Commit:** `${{ steps.version.outputs.hash }}`
+
+            ### 🧩 Build Information
+            #### fluid-basyx-dotnet-repo-server
+            - Docker images: `engineeringmethodsag/fluid-basyx-dotnet-repo-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}`
+            - Latest tag: `engineeringmethodsag/fluid-basyx-dotnet-repo-server:latest`
+            #### fluid-basyx-dotnet-aas-sm-server
+            - Docker images: `engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:${{ steps.version.outputs.version }}-${{ steps.version.outputs.hash }}`
+            - Latest tag: `engineeringmethodsag/fluid-basyx-dotnet-aas-sm-server:latest`
+
+            ### 🔗 Links
+            - [Compare changes](https://github.com/${{ github.repository }}/compare/last...v${{ steps.version.outputs.version }})
+            - [Full commit log](https://github.com/${{ github.repository }}/commits/main)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Version variable
         env:

@@ -517,24 +517,28 @@ namespace BaSyx.Models.Extensions
                 writer.WritePropertyName("second");
                 JsonSerializer.Serialize(writer, arelValue.Second, _options);
 
-                writer.WritePropertyName("annotations");
-                writer.WriteStartArray();
-                foreach (var annotation in arelValue.Annotations)
+                if (arelValue.Annotations.Count > 0)
                 {
-					if (_converterOptions.SerializationOption == SerializationOption.FullModel)
-					{
-						JsonSerializer.Serialize(writer, annotation, _jsonOptions);
-					}
-                    else if (_converterOptions.SerializationOption == SerializationOption.ValueOnly)
-					{
-                        var annotationValueScope = annotation.GetValueScope().Result;
-                        writer.WriteStartObject();
-                        writer.WritePropertyName(annotation.IdShort);
-                        Write(writer, annotationValueScope, _options);
-                        writer.WriteEndObject();
-                    }                   
+                    writer.WritePropertyName("annotations");
+                    writer.WriteStartArray();
+                    foreach (var annotation in arelValue.Annotations)
+                    {
+                        if (_converterOptions.SerializationOption == SerializationOption.FullModel)
+                        {
+                            JsonSerializer.Serialize(writer, annotation, _jsonOptions);
+                        }
+                        else if (_converterOptions.SerializationOption == SerializationOption.ValueOnly)
+                        {
+                            var annotationValueScope = annotation.GetValueScope().Result;
+                            writer.WriteStartObject();
+                            writer.WritePropertyName(annotation.IdShort);
+                            Write(writer, annotationValueScope, _options);
+                            writer.WriteEndObject();
+                        }
+                    }
+
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
 
                 if (_converterOptions.EnclosingObject)
                     writer.WriteEndObject();
@@ -627,8 +631,12 @@ namespace BaSyx.Models.Extensions
 			}
 			else if (reader.TokenType == JsonTokenType.String)
 			{
-				string value = reader.GetString();
-				return new ElementValue(value, dataType ?? typeof(string));
+                string value = reader.GetString();
+
+                if (_dataType?.DataObjectType == DataObjectType.Bool && bool.TryParse(value, out bool result))
+                    return new ElementValue(value, dataType ?? typeof(bool));
+
+                return new ElementValue(value, dataType ?? typeof(string));
 			}
 			else if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
 			{
